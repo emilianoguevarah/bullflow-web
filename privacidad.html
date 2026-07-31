@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <link rel="icon" type="image/jpeg" href="public/logo.jpeg" />
+  <title>Política de Privacidad | BullFlow</title>
+  <meta name="description" content="Conocé cómo BullFlow recopila, usa, protege y comparte los datos de los usuarios del servicio." />
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link href="https://fonts.googleapis.com/css2?family=Open+Sans:ital,wght@0,300;0,400;0,500;0,600;0,700;0,800;1,400&display=swap" rel="stylesheet" />
+  <style>
+    *, *::before, *::after { font-family: 'Open Sans', sans-serif; box-sizing: border-box; }
+    html { scroll-behavior: smooth; }
+    :root {
+      --bg-deep: #f8f9fa;
+      --bg-mid: #eef0f3;
+      --bg-card: #ffffff;
+      --green: #16a34a;
+      --green-dim: #15803d;
+      --green-glow: rgba(22,163,74,0.10);
+      --gold: #a37a10;
+      --text: #111827;
+      --muted: #6b7280;
+      --border: rgba(0,0,0,0.08);
+    }
+    body { background: var(--bg-deep); color: var(--text); }
+    .btn-primary { background: var(--green); color: #fff; font-weight: 700; border-radius: 8px; padding: 0.7rem 1.4rem; display: inline-flex; align-items: center; gap: 0.45rem; transition: background 0.2s, transform 0.15s, box-shadow 0.2s; font-size: 0.875rem; letter-spacing: 0.01em; }
+    .btn-primary:hover { background: #166534; transform: translateY(-1px); box-shadow: 0 8px 24px rgba(22,163,74,0.3); }
+    #navbar { transition: background 0.3s, box-shadow 0.3s; background: rgba(248,249,250,0.97); backdrop-filter: blur(16px); box-shadow: 0 1px 0 rgba(0,0,0,0.08); position: fixed; top: 0; left: 0; right: 0; z-index: 50; }
+    .section-eyebrow { font-size: 0.7rem; font-weight: 700; letter-spacing: 0.12em; text-transform: uppercase; color: var(--gold); }
+    .page-card { background: var(--bg-card); border: 1px solid rgba(0,0,0,0.08); border-radius: 18px; box-shadow: 0 18px 50px rgba(0,0,0,0.06); }
+    .legal-section { padding-top: 1.25rem; }
+    .legal-section + .legal-section { border-top: 1px solid var(--border); margin-top: 1.25rem; }
+  </style>
+</head>
+<body>
+  <nav id="navbar">
+    <div class="max-w-6xl mx-auto px-6 py-3 flex items-center justify-between">
+      <a href="index.html" style="background:white;border-radius:10px;padding:4px 10px;display:inline-flex;align-items:center;">
+        <img src="logo.png.png" alt="BullFlow" style="height:72px;width:auto;" />
+      </a>
+      <div class="flex items-center gap-5">
+        <a href="index.html#precios" class="text-sm font-semibold hidden md:block transition-colors" style="color:var(--text)">Precios</a>
+        <button onclick="openWA()" class="btn-primary">
+          <svg width="15" height="15" viewBox="0 0 24 24" fill="currentColor"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347z"/><path d="M12 0C5.373 0 0 5.373 0 12c0 2.117.549 4.103 1.51 5.829L.057 23.93l6.255-1.439A11.945 11.945 0 0012 24c6.627 0 12-5.373 12-12S18.627 0 12 0zm0 21.818a9.818 9.818 0 01-5.006-1.37l-.36-.213-3.712.853.879-3.609-.235-.371A9.818 9.818 0 1112 21.818z"/></svg>
+          Empezar gratis
+        </button>
+      </div>
+    </div>
+  </nav>
+
+  <main class="pt-28 pb-20 px-6">
+    <div class="max-w-3xl mx-auto">
+      <div class="page-card px-7 py-8 md:px-10 md:py-12">
+        <p class="section-eyebrow mb-4">Privacidad</p>
+        <h1 class="text-4xl md:text-5xl font-extrabold tracking-tight mb-4" style="color:var(--text)">Política de Privacidad</h1>
+        <p class="text-sm font-semibold mb-8" style="color:var(--muted)">Última actualización: 10 de julio de 2026</p>
+
+        <div class="legal-section">
+          <p class="section-eyebrow mb-3">Información que recopilamos</p>
+          <p class="leading-relaxed mb-4" style="color:var(--muted)">BullFlow puede recopilar nombre, teléfono, mensajes enviados al asistente, gastos, ventas, inventario registrado e información técnica necesaria para prestar el servicio y mantener la plataforma funcionando correctamente.</p>
+        </div>
+
+        <div class="legal-section">
+          <p class="section-eyebrow mb-3">Uso de la información</p>
+          <p class="leading-relaxed mb-4" style="color:var(--muted)">La información se utiliza para brindar el servicio, generar reportes, mejorar BullFlow, resolver problemas técnicos y cumplir obligaciones legales o regulatorias cuando corresponda.</p>
+        </div>
+
+        <div class="legal-section">
+          <p class="section-eyebrow mb-3">Seguridad</p>
+          <p class="leading-relaxed mb-4" style="color:var(--muted)">Aplicamos medidas razonables de seguridad técnica y organizativa para proteger los datos frente a accesos no autorizados, pérdida, uso indebido o divulgación accidental.</p>
+        </div>
+
+        <div class="legal-section">
+          <p class="section-eyebrow mb-3">Compartición de datos</p>
+          <p class="leading-relaxed mb-4" style="color:var(--muted)">No vendemos información personal. Podemos compartir datos solo con proveedores que participan en la prestación del servicio, como Meta / WhatsApp Business Platform, OpenAI, Anthropic, Supabase y Railway, únicamente en la medida necesaria para operar BullFlow.</p>
+        </div>
+
+        <div class="legal-section">
+          <p class="section-eyebrow mb-3">Derechos</p>
+          <p class="leading-relaxed" style="color:var(--muted)">Podés solicitar la actualización o eliminación de tus datos escribiendo a emilianoguevarah@gmail.com. Revisaremos tu pedido y responderemos por los canales de contacto disponibles.</p>
+        </div>
+      </div>
+    </div>
+  </main>
+
+  <footer style="background:var(--bg-deep); border-top: 1px solid var(--border)" class="py-7 px-6">
+    <div class="max-w-6xl mx-auto flex flex-col items-center gap-4 text-center">
+      <img src="logo.png.png" alt="BullFlow" style="height:60px;width:auto;" />
+      <p style="color:var(--muted)" class="text-sm">© 2026 BullFlow. Todos los derechos reservados.</p>
+      <p style="color:var(--muted)" class="text-sm max-w-2xl">BullFlow es una marca comercial operada por Emiliano Guevara, Monotributista, Argentina.</p>
+      <div class="flex flex-wrap items-center justify-center gap-x-4 gap-y-2 text-sm font-semibold" style="color:var(--text)">
+        <a href="contacto.html" class="hover:text-[var(--green)] transition-colors">Contacto</a>
+        <a href="privacidad.html" class="hover:text-[var(--green)] transition-colors">Política de Privacidad</a>
+        <a href="terminos.html" class="hover:text-[var(--green)] transition-colors">Términos y Condiciones</a>
+        <a href="aviso-ia.html" class="hover:text-[var(--green)] transition-colors">Aviso de IA</a>
+      </div>
+    </div>
+  </footer>
+
+  <script>
+    function openWA(plan) {
+      const numero = '5492622541728';
+      const msgs = { Personal: 'Hola BullFlow, quiero el plan Personal', Negocio: 'Hola BullFlow, quiero el plan Negocio', default: 'Hola BullFlow, quiero empezar gratis' };
+      window.open(`https://wa.me/${numero}?text=${encodeURIComponent(msgs[plan] || msgs.default)}`, '_blank');
+    }
+  </script>
+</body>
+</html>

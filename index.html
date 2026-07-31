@@ -1,0 +1,803 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <link rel="icon" type="image/jpeg" href="public/logo.jpeg" />
+  <title>BullFlow — Controlá tu negocio desde WhatsApp</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link href="https://fonts.googleapis.com/css2?family=Open+Sans:ital,wght@0,300;0,400;0,500;0,600;0,700;0,800;1,400&display=swap" rel="stylesheet" />
+  <style>
+    *, *::before, *::after { font-family: 'Open Sans', sans-serif; box-sizing: border-box; }
+    html { scroll-behavior: smooth; }
+
+    :root {
+      --bg-deep:    #f8f9fa;
+      --bg-mid:     #eef0f3;
+      --bg-card:    #ffffff;
+      --green:      #16a34a;
+      --green-dim:  #15803d;
+      --green-glow: rgba(22,163,74,0.10);
+      --gold:       #a37a10;
+      --text:       #111827;
+      --muted:      #6b7280;
+      --border:     rgba(0,0,0,0.08);
+    }
+
+    body { background: var(--bg-deep); color: var(--text); }
+
+    .announce-bar { background: var(--green); color: white; text-align: center; padding: 10px 16px; font-size: 0.8rem; font-weight: 600; letter-spacing: 0.01em; position: relative; z-index: 60; }
+    .announce-bar a { text-decoration: underline; color: white; opacity: 0.9; }
+    .announce-bar a:hover { opacity: 1; }
+
+    #navbar { transition: background 0.3s, box-shadow 0.3s; background: transparent; position: fixed; top: 36px; left: 0; right: 0; z-index: 50; }
+    #navbar.scrolled { background: rgba(248,249,250,0.97); backdrop-filter: blur(16px); box-shadow: 0 1px 0 rgba(0,0,0,0.08); top: 0; }
+    .announce-bar-wrap { position: fixed; top: 0; left: 0; right: 0; z-index: 60; }
+
+    .btn-primary { background: var(--green); color: #fff; font-weight: 700; border-radius: 8px; padding: 0.7rem 1.4rem; display: inline-flex; align-items: center; gap: 0.45rem; transition: background 0.2s, transform 0.15s, box-shadow 0.2s; font-size: 0.875rem; letter-spacing: 0.01em; }
+    .btn-primary:hover { background: #166534; transform: translateY(-1px); box-shadow: 0 8px 24px rgba(22,163,74,0.3); }
+
+    .btn-outline-white { border: 2px solid rgba(255,255,255,0.6); color: white; font-weight: 700; border-radius: 8px; padding: 0.7rem 1.4rem; display: inline-flex; align-items: center; gap: 0.45rem; transition: border-color 0.2s, background 0.2s; font-size: 0.875rem; backdrop-filter: blur(4px); background: rgba(255,255,255,0.08); }
+    .btn-outline-white:hover { border-color: white; background: rgba(255,255,255,0.15); }
+
+    .hero-section { position: relative; min-height: 100vh; display: flex; align-items: center; overflow: hidden; }
+    .hero-slides { position: absolute; inset: 0; z-index: 0; }
+    .hero-slide { position: absolute; inset: 0; background-size: cover; background-position: center; opacity: 0; transition: opacity 1.2s ease; }
+    .hero-slide.active { opacity: 1; }
+    .hero-slide::after { content: ''; position: absolute; inset: 0; background: linear-gradient(to right, rgba(0,0,0,0.72) 0%, rgba(0,0,0,0.45) 55%, rgba(0,0,0,0.2) 100%); }
+    .hero-dots { position: absolute; bottom: 2rem; left: 50%; transform: translateX(-50%); display: flex; gap: 8px; z-index: 10; }
+    .hero-dot { width: 8px; height: 8px; border-radius: 50%; background: rgba(255,255,255,0.4); cursor: pointer; transition: background 0.3s, transform 0.3s; }
+    .hero-dot.active { background: white; transform: scale(1.2); }
+
+    .hero-badge { display: inline-flex; align-items: center; gap: 8px; background: rgba(255,255,255,0.12); border: 1px solid rgba(255,255,255,0.3); border-radius: 100px; padding: 5px 13px; font-size: 0.72rem; font-weight: 700; color: white; letter-spacing: 0.06em; text-transform: uppercase; backdrop-filter: blur(4px); }
+    .pulse-dot { width: 7px; height: 7px; border-radius: 50%; background: #4ade80; animation: pulse-ring 2s infinite; }
+    @keyframes pulse-ring { 0% { box-shadow: 0 0 0 0 rgba(74,222,128,0.5); } 70% { box-shadow: 0 0 0 8px rgba(74,222,128,0); } 100% { box-shadow: 0 0 0 0 rgba(74,222,128,0); } }
+
+    .rubro-chip { display: inline-flex; align-items: center; gap: 7px; background: rgba(255,255,255,0.12); border: 1px solid rgba(255,255,255,0.2); border-radius: 8px; padding: 7px 14px; font-size: 0.8rem; font-weight: 600; color: white; backdrop-filter: blur(4px); transition: background 0.2s; cursor: default; }
+    .rubro-chip:hover { background: rgba(255,255,255,0.2); }
+    .rubro-chip svg { width: 16px; height: 16px; stroke: #4ade80; fill: none; stroke-width: 2; stroke-linecap: round; stroke-linejoin: round; flex-shrink: 0; }
+
+    .wa-phone { background: #111b21; border-radius: 40px; width: 290px; min-height: 540px; border: 7px solid rgba(255,255,255,0.15); box-shadow: 0 40px 80px rgba(0,0,0,0.5), 0 0 0 1px rgba(255,255,255,0.05); overflow: hidden; position: relative; }
+    .wa-phone::before { content: ''; position: absolute; top: 0; left: 50%; transform: translateX(-50%); width: 80px; height: 6px; background: rgba(255,255,255,0.1); border-radius: 0 0 8px 8px; z-index: 10; }
+    .wa-header { background: #202c33; padding: 16px 14px 12px; display: flex; align-items: center; gap: 10px; }
+    .wa-avatar { width: 36px; height: 36px; border-radius: 50%; background: white; display: flex; align-items: center; justify-content: center; overflow: hidden; flex-shrink: 0; }
+    .wa-avatar img { width: 100%; height: 100%; object-fit: cover; }
+    .wa-name { font-size: 13px; font-weight: 700; color: #e9edef; }
+    .wa-status { font-size: 11px; color: #8696a0; }
+    .wa-body { background: #0b141a; padding: 12px 10px; min-height: 420px; display: flex; flex-direction: column; gap: 6px; }
+    .wa-msg { max-width: 88%; padding: 7px 10px 4px; border-radius: 8px; font-size: 12px; line-height: 1.5; opacity: 0; transform: translateY(6px); transition: opacity 0.35s ease, transform 0.35s ease; }
+    .wa-msg.show { opacity: 1; transform: translateY(0); }
+    .wa-msg.sent { background: #005c4b; color: #e9edef; align-self: flex-end; border-bottom-right-radius: 2px; }
+    .wa-msg.recv { background: #202c33; color: #e9edef; align-self: flex-start; border-bottom-left-radius: 2px; }
+    .wa-time { font-size: 10px; color: #8696a0; text-align: right; margin-top: 2px; }
+    .wa-typing { background: #202c33; border-radius: 8px; padding: 10px 14px; align-self: flex-start; opacity: 0; transition: opacity 0.3s; display: flex; gap: 4px; align-items: center; }
+    .wa-typing.show { opacity: 1; }
+    .wa-typing span { width: 6px; height: 6px; background: #8696a0; border-radius: 50%; animation: bounce 1.2s infinite; }
+    .wa-typing span:nth-child(2) { animation-delay: 0.2s; }
+    .wa-typing span:nth-child(3) { animation-delay: 0.4s; }
+    @keyframes bounce { 0%, 60%, 100% { transform: translateY(0); } 30% { transform: translateY(-5px); } }
+
+    .stats-band { border-top: 1px solid var(--border); border-bottom: 1px solid var(--border); background: var(--bg-mid); padding: 2.5rem 0; }
+    .stat-item { text-align: center; padding: 0 2rem; }
+    .stat-item + .stat-item { border-left: 1px solid var(--border); }
+    .stat-num { font-size: 2.25rem; font-weight: 800; color: var(--text); line-height: 1; letter-spacing: -0.02em; }
+    .stat-num span { color: var(--green); }
+    .stat-label { font-size: 0.78rem; color: var(--muted); margin-top: 0.35rem; font-weight: 500; }
+
+    .problem-card { background: var(--bg-card); border: 1px solid rgba(0,0,0,0.07); border-radius: 14px; padding: 1.6rem; transition: box-shadow 0.2s, transform 0.2s; }
+    .problem-card:hover { box-shadow: 0 8px 32px rgba(0,0,0,0.08); transform: translateY(-2px); }
+    .problem-icon { width: 44px; height: 44px; border-radius: 10px; background: rgba(22,163,74,0.07); display: flex; align-items: center; justify-content: center; margin-bottom: 1rem; }
+    .problem-icon svg { width: 22px; height: 22px; stroke: var(--green); fill: none; stroke-width: 1.8; stroke-linecap: round; stroke-linejoin: round; }
+
+    .chat-mini { background: #111b21; border-radius: 16px; overflow: hidden; border: 1px solid rgba(0,0,0,0.1); box-shadow: 0 20px 60px rgba(0,0,0,0.12); }
+    .chat-mini-header { background: #202c33; padding: 10px 12px; display: flex; align-items: center; gap: 8px; }
+    .chat-mini-av { width: 28px; height: 28px; border-radius: 50%; background: white; display: flex; align-items: center; justify-content: center; overflow: hidden; flex-shrink: 0; }
+    .chat-mini-av img { width: 100%; height: 100%; object-fit: cover; }
+    .chat-mini-name { font-size: 12px; font-weight: 700; color: #e9edef; }
+    .chat-mini-body { background: #0b141a; padding: 10px 8px; display: flex; flex-direction: column; gap: 5px; }
+    .cm { max-width: 90%; padding: 6px 9px 3px; border-radius: 7px; font-size: 11.5px; line-height: 1.45; color: #e9edef; }
+    .cm.s { background: #005c4b; align-self: flex-end; border-bottom-right-radius: 2px; }
+    .cm.r { background: #202c33; align-self: flex-start; border-bottom-left-radius: 2px; }
+    .cm-time { font-size: 9.5px; color: #8696a0; text-align: right; margin-top: 2px; }
+
+    .feature-row { display: grid; grid-template-columns: 1fr 1fr; gap: 4rem; align-items: center; padding: 5rem 0; border-bottom: 1px solid var(--border); }
+    .feature-row:last-child { border-bottom: none; }
+    .feature-row.reverse { direction: rtl; }
+    .feature-row.reverse > * { direction: ltr; }
+
+    /* PANEL SLIDESHOW */
+    .panel-slider { position: relative; border-radius: 16px; overflow: hidden; box-shadow: 0 24px 64px rgba(0,0,0,0.14); border: 1px solid rgba(0,0,0,0.08); background: #f1f5f9; }
+    .panel-slide { display: none; }
+    .panel-slide.active { display: block; }
+    .panel-slide img { width: 100%; height: auto; display: block; }
+    .panel-nav { display: flex; justify-content: center; gap: 8px; padding: 12px 0 4px; background: white; }
+    .panel-dot { width: 8px; height: 8px; border-radius: 50%; background: rgba(0,0,0,0.15); cursor: pointer; transition: background 0.3s, transform 0.3s; border: none; }
+    .panel-dot.active { background: var(--green); transform: scale(1.2); }
+    .panel-arrows { position: absolute; top: 50%; transform: translateY(-50%); width: 100%; display: flex; justify-content: space-between; padding: 0 10px; pointer-events: none; }
+    .panel-arrow { width: 32px; height: 32px; border-radius: 50%; background: rgba(255,255,255,0.9); border: 1px solid rgba(0,0,0,0.1); display: flex; align-items: center; justify-content: center; cursor: pointer; pointer-events: all; transition: background 0.2s, transform 0.15s; box-shadow: 0 2px 8px rgba(0,0,0,0.1); }
+    .panel-arrow:hover { background: white; transform: scale(1.08); }
+    .panel-arrow svg { width: 16px; height: 16px; stroke: var(--text); fill: none; stroke-width: 2.5; stroke-linecap: round; stroke-linejoin: round; }
+
+    .testi-card { background: var(--bg-card); border: 1px solid rgba(0,0,0,0.07); border-radius: 14px; padding: 1.6rem; transition: box-shadow 0.2s; }
+    .testi-card:hover { box-shadow: 0 8px 32px rgba(0,0,0,0.08); }
+    .stars { color: #f59e0b; font-size: 0.85rem; letter-spacing: 1px; margin-bottom: 0.75rem; }
+    .testi-text { font-size: 0.9rem; line-height: 1.65; color: var(--text); margin-bottom: 1rem; font-style: italic; }
+    .testi-author { display: flex; align-items: center; gap: 10px; }
+    .testi-avatar { width: 36px; height: 36px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-weight: 800; font-size: 13px; color: white; flex-shrink: 0; }
+    .testi-name { font-weight: 700; font-size: 0.82rem; color: var(--text); }
+    .testi-role { font-size: 0.75rem; color: var(--muted); }
+
+    .testimonial-form { background: var(--bg-card); border: 1px solid rgba(0,0,0,0.08); border-radius: 14px; padding: 1.6rem; box-shadow: 0 8px 28px rgba(0,0,0,0.05); }
+    .field-label { display: block; font-size: 0.78rem; font-weight: 700; letter-spacing: 0.08em; text-transform: uppercase; color: var(--gold); margin-bottom: 0.45rem; }
+    .field-input { width: 100%; border: 1px solid rgba(0,0,0,0.12); border-radius: 10px; padding: 0.72rem 0.85rem; font-size: 0.92rem; color: var(--text); background: white; outline: none; transition: border-color 0.2s, box-shadow 0.2s; }
+    .field-input:focus { border-color: var(--green); box-shadow: 0 0 0 3px rgba(22,163,74,0.14); }
+    .star-picker { display: inline-flex; gap: 0.25rem; }
+    .rating-star { font-size: 1.85rem; line-height: 1; color: #d1d5db; background: transparent; border: none; cursor: pointer; padding: 0; transition: transform 0.12s ease, color 0.2s ease; }
+    .rating-star.active { color: #f59e0b; }
+    .rating-star:hover { transform: translateY(-1px) scale(1.05); }
+    .testimonials-more-wrap { display: flex; justify-content: center; margin-top: 1.25rem; }
+
+    .plan-card { background: var(--bg-card); border: 1px solid rgba(0,0,0,0.08); border-radius: 16px; padding: 2rem; transition: transform 0.2s, box-shadow 0.2s; }
+    .plan-card:hover { transform: translateY(-4px); box-shadow: 0 20px 60px rgba(0,0,0,0.08); }
+    .plan-card.featured { border: 2px solid var(--green); background: linear-gradient(135deg, rgba(22,163,74,0.04) 0%, var(--bg-card) 60%); box-shadow: 0 4px 24px rgba(22,163,74,0.1); }
+
+    .section-eyebrow { font-size: 0.7rem; font-weight: 700; letter-spacing: 0.12em; text-transform: uppercase; color: var(--gold); }
+    .h-rule { width: 36px; height: 2px; background: var(--gold); border-radius: 2px; margin-bottom: 1.4rem; }
+
+    .fade { opacity: 0; transform: translateY(22px); transition: opacity 0.6s ease, transform 0.6s ease; }
+    .fade.in { opacity: 1; transform: translateY(0); }
+
+    @media (max-width: 768px) {
+      .feature-row { grid-template-columns: 1fr; direction: ltr !important; gap: 2rem; padding: 3rem 0; }
+      .feature-row > * { direction: ltr !important; }
+      .wa-phone { width: 260px; margin: 0 auto; }
+      .stat-item + .stat-item { border-left: none; border-top: 1px solid var(--border); }
+      .rubros-grid { grid-template-columns: 1fr 1fr; }
+    }
+  </style>
+</head>
+<body>
+
+<!-- ANNOUNCEMENT BAR -->
+<div class="announce-bar-wrap" id="announce-wrap">
+  <div class="announce-bar">
+    🎉 Probalo una semana gratis, sin tarjeta de crédito. &nbsp;<a href="#precios" onclick="document.getElementById('precios').scrollIntoView({behavior:'smooth'})">Ver planes →</a>
+  </div>
+</div>
+
+<!-- NAVBAR -->
+<nav id="navbar">
+  <div class="max-w-6xl mx-auto px-6 py-3 flex items-center justify-between">
+    <div style="background:white;border-radius:10px;padding:4px 10px;">
+      <img src="logo.png.png" alt="BullFlow" style="height:72px;width:auto;" />
+    </div>
+    <div class="flex items-center gap-5">
+      <a href="#precios" id="nav-precios-link" class="text-sm font-semibold hidden md:block transition-colors" style="color:white; text-shadow: 0 1px 3px rgba(0,0,0,0.4)">Precios</a>
+      <button onclick="openWA()" class="btn-primary">
+        <svg width="15" height="15" viewBox="0 0 24 24" fill="currentColor"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347z"/><path d="M12 0C5.373 0 0 5.373 0 12c0 2.117.549 4.103 1.51 5.829L.057 23.93l6.255-1.439A11.945 11.945 0 0012 24c6.627 0 12-5.373 12-12S18.627 0 12 0zm0 21.818a9.818 9.818 0 01-5.006-1.37l-.36-.213-3.712.853.879-3.609-.235-.371A9.818 9.818 0 1112 21.818z"/></svg>
+        Empezar gratis
+      </button>
+    </div>
+  </div>
+</nav>
+
+<!-- HERO -->
+<section class="hero-section" style="padding-top:76px;">
+  <div class="hero-slides">
+    <div class="hero-slide active" style="background-image:url('hero1.jpeg')"></div>
+    <div class="hero-slide" style="background-image:url('hero2.jpeg')"></div>
+    <div class="hero-slide" style="background-image:url('hero3.jpeg')"></div>
+  </div>
+  <div class="max-w-6xl mx-auto w-full px-6 grid grid-cols-1 md:grid-cols-2 gap-16 items-center relative z-10 py-20">
+    <div>
+      <div class="hero-badge mb-7"><div class="pulse-dot"></div>Bot activo en WhatsApp</div>
+      <h1 class="text-5xl md:text-6xl font-extrabold leading-[1.08] mb-5 tracking-tight text-white">
+        Controlá,<br/><span style="color:#4ade80">tu negocio</span><br/>desde WhatsApp.
+      </h1>
+      <p class="text-lg leading-relaxed mb-7 max-w-md" style="color:rgba(255,255,255,0.75)">Escribís como le hablarías a un conocido. BullFlow registra tus movimientos, los organiza y te da el control de tus finanzas.</p>
+      <div class="grid grid-cols-2 gap-2 mb-8 rubros-grid" style="max-width:380px">
+        <div class="rubro-chip"><svg viewBox="0 0 24 24"><path d="M3 9l9-7 9 7v11a2 2 0 01-2 2H5a2 2 0 01-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>Almacenes</div>
+        <div class="rubro-chip"><svg viewBox="0 0 24 24"><circle cx="9" cy="21" r="1"/><circle cx="20" cy="21" r="1"/><path d="M1 1h4l2.68 13.39a2 2 0 002 1.61h9.72a2 2 0 001.95-1.57l1.65-7.43H6"/></svg>Comercios</div>
+        <div class="rubro-chip"><svg viewBox="0 0 24 24"><path d="M17 21v-2a4 4 0 00-4-4H5a4 4 0 00-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 00-3-3.87M16 3.13a4 4 0 010 7.75"/></svg>Servicios</div>
+        <div class="rubro-chip"><svg viewBox="0 0 24 24"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg>Gastronomía</div>
+        <div class="rubro-chip"><svg viewBox="0 0 24 24"><rect x="2" y="3" width="20" height="14" rx="2"/><path d="M8 21h8M12 17v4"/></svg>Ropa y moda</div>
+        <div class="rubro-chip"><svg viewBox="0 0 24 24"><line x1="12" y1="1" x2="12" y2="23"/><path d="M17 5H9.5a3.5 3.5 0 000 7h5a3.5 3.5 0 010 7H6"/></svg>Finanzas</div>
+      </div>
+      <div class="flex flex-col sm:flex-row gap-3">
+        <button onclick="openWA()" class="btn-primary">
+          <svg width="17" height="17" viewBox="0 0 24 24" fill="currentColor"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347z"/><path d="M12 0C5.373 0 0 5.373 0 12c0 2.117.549 4.103 1.51 5.829L.057 23.93l6.255-1.439A11.945 11.945 0 0012 24c6.627 0 12-5.373 12-12S18.627 0 12 0zm0 21.818a9.818 9.818 0 01-5.006-1.37l-.36-.213-3.712.853.879-3.609-.235-.371A9.818 9.818 0 1112 21.818z"/></svg>
+          Probalo gratis
+        </button>
+        <button onclick="document.getElementById('como-funciona').scrollIntoView({behavior:'smooth'})" class="btn-outline-white">Ver cómo funciona →</button>
+      </div>
+    </div>
+    <div class="flex justify-center">
+      <div class="wa-phone">
+        <div class="wa-header">
+          <div class="wa-avatar"><img src="logo.png.png" alt="BF" style="width:100%;height:100%;object-fit:cover;" /></div>
+          <div><div class="wa-name">BullFlow</div><div class="wa-status">en línea</div></div>
+        </div>
+        <div class="wa-body" id="chat-body"></div>
+      </div>
+    </div>
+  </div>
+  <div class="hero-dots">
+    <div class="hero-dot active" onclick="goSlide(0)"></div>
+    <div class="hero-dot" onclick="goSlide(1)"></div>
+    <div class="hero-dot" onclick="goSlide(2)"></div>
+  </div>
+</section>
+
+<!-- STATS BAND -->
+<div class="stats-band">
+  <div class="max-w-4xl mx-auto px-6">
+    <div class="grid grid-cols-2 md:grid-cols-4 gap-0">
+      <div class="stat-item fade"><div class="stat-num"><span id="cnt1">0</span></div><div class="stat-label">Negocios activos</div></div>
+      <div class="stat-item fade" style="transition-delay:.1s"><div class="stat-num"><span id="cnt2">0</span> min</div><div class="stat-label">Para empezar</div></div>
+      <div class="stat-item fade" style="transition-delay:.2s"><div class="stat-num"><span id="cnt3">0</span>%</div><div class="stat-label">Desde WhatsApp</div></div>
+      <div class="stat-item fade" style="transition-delay:.3s"><div class="stat-num"><span id="cnt4">0</span></div><div class="stat-label">Apps para instalar</div></div>
+    </div>
+  </div>
+</div>
+
+<!-- PROBLEMA -->
+<section class="py-24 px-6" style="background:var(--bg-mid)">
+  <div class="max-w-4xl mx-auto text-center fade">
+    <p class="section-eyebrow mb-4">El problema</p>
+    <h2 class="text-4xl md:text-5xl font-extrabold mb-5 tracking-tight leading-tight" style="color:var(--text)">¿No sabés cuánto<br/>ganaste este mes?</h2>
+    <p style="color:var(--muted)" class="max-w-xl mx-auto mb-12 text-lg leading-relaxed">La mayoría de los emprendedores terminan el mes sin saber si ganaron o perdieron plata.</p>
+    <div class="grid grid-cols-1 md:grid-cols-3 gap-4 text-left">
+      <div class="problem-card fade" style="transition-delay:.05s">
+        <div class="problem-icon"><svg viewBox="0 0 24 24"><path d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/></svg></div>
+        <p class="font-bold mb-1.5 text-sm" style="color:var(--text)">Papeles que desaparecen</p>
+        <p style="color:var(--muted)" class="text-sm leading-relaxed">Anotás las ventas en papeles que después perdés o simplemente olvidás.</p>
+      </div>
+      <div class="problem-card fade" style="transition-delay:.1s">
+        <div class="problem-icon"><svg viewBox="0 0 24 24"><path d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"/></svg></div>
+        <p class="font-bold mb-1.5 text-sm" style="color:var(--text)">Sin claridad financiera</p>
+        <p style="color:var(--muted)" class="text-sm leading-relaxed">No sabés si tu negocio ganó o perdió plata este mes. Y eso es un riesgo real.</p>
+      </div>
+      <div class="problem-card fade" style="transition-delay:.15s">
+        <div class="problem-icon"><svg viewBox="0 0 24 24"><rect x="3" y="3" width="18" height="18" rx="2"/><path d="M3 9h18M9 21V9"/></svg></div>
+        <p class="font-bold mb-1.5 text-sm" style="color:var(--text)">Planillas que no usás</p>
+        <p style="color:var(--muted)" class="text-sm leading-relaxed">Perdés horas en Excel que termina abandonado porque nadie tiene tiempo.</p>
+      </div>
+    </div>
+    <div class="mt-10 inline-flex items-center gap-2 text-sm font-semibold" style="color:var(--green)">
+      <svg width="15" height="15" viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd"/></svg>
+      BullFlow lo resuelve desde tu WhatsApp — sin apps, sin planillas.
+    </div>
+  </div>
+</section>
+
+<!-- FEATURES -->
+<section id="como-funciona" class="py-20 px-6" style="background:white">
+  <div class="max-w-5xl mx-auto">
+    <div class="text-center mb-20 fade">
+      <p class="section-eyebrow mb-4">Cómo funciona</p>
+      <h2 class="text-4xl md:text-5xl font-extrabold tracking-tight" style="color:var(--text)">Escribís y BullFlow registra.</h2>
+    </div>
+    <div class="feature-row fade">
+      <div>
+        <div class="h-rule"></div>
+        <p class="section-eyebrow mb-3">Gastos</p>
+        <h3 class="text-3xl font-extrabold mb-4 tracking-tight leading-tight" style="color:var(--text)">Registrá un gasto<br/>en una línea</h3>
+        <p style="color:var(--muted)" class="leading-relaxed">Por texto, audio o foto. BullFlow detecta el monto, la categoría y la fecha automáticamente. Sin formularios, sin fricción.</p>
+      </div>
+      <div class="chat-mini">
+        <div class="chat-mini-header"><div class="chat-mini-av"><img src="logo.png.png" alt="BF" style="width:100%;height:100%;object-fit:cover;" /></div><div><div class="chat-mini-name">BullFlow</div></div></div>
+        <div class="chat-mini-body">
+          <div class="cm r">👋 ¡Hola! Soy <b>BullFlow</b> 🐂<br/><br/><i>¿Qué querés registrar? Escribí tu gasto, venta o 'ayuda'</i><div class="cm-time">10:55</div></div>
+          <div class="cm s">Gasté $25mil en mercadería<div class="cm-time">10:56 ✓✓</div></div>
+          <div class="cm r">✅ <b>Gasto registrado</b><br/><br/>💰 Monto: ARS 25.000<br/>📁 Categoría: 🧳 Mercadería<br/>🕐 Fecha: 22/06/2026<br/><br/><i>Escribí "reporte" para ver tu mes</i><div class="cm-time">10:56</div></div>
+        </div>
+      </div>
+    </div>
+    <div class="feature-row reverse fade">
+      <div>
+        <div class="h-rule"></div>
+        <p class="section-eyebrow mb-3">Reportes</p>
+        <h3 class="text-3xl font-extrabold mb-4 tracking-tight leading-tight" style="color:var(--text)">Un mensaje.<br/>Todo el mes.</h3>
+        <p style="color:var(--muted)" class="leading-relaxed">Escribís "reporte" y recibís un resumen completo: gastos por categoría, ventas totales y ganancia neta. Todo calculado al instante.</p>
+      </div>
+      <div class="chat-mini">
+        <div class="chat-mini-header"><div class="chat-mini-av"><img src="logo.png.png" alt="BF" style="width:100%;height:100%;object-fit:cover;" /></div><div><div class="chat-mini-name">BullFlow</div></div></div>
+        <div class="chat-mini-body">
+          <div class="cm s">Reporte<div class="cm-time">10:56 ✓✓</div></div>
+          <div class="cm r">📊 <b>Reporte del periodo</b><br/>📅 01/06/2026 - 30/06/2026<br/><br/>💸 <b>GASTOS</b><br/>🏠 Hogar: $138.700<br/>🍔 Comida: $94.500<br/>🧳 Mercadería: $50.000<br/>📦 Total: <b>$336.200</b><br/><br/>🧳 <b>VENTAS</b><br/>Total: $150.000<br/>Ganancia: <b style="color:#16a34a">$95.500 (64%)</b><div class="cm-time">10:56</div></div>
+        </div>
+      </div>
+    </div>
+    <div class="feature-row fade">
+      <div>
+        <div class="h-rule"></div>
+        <p class="section-eyebrow mb-3">Stock e inventario</p>
+        <h3 class="text-3xl font-extrabold mb-4 tracking-tight leading-tight" style="color:var(--text)">El inventario<br/>se actualiza solo</h3>
+        <p style="color:var(--muted)" class="leading-relaxed">Cada venta que registrás descuenta del stock automáticamente. Recibís alertas cuando un producto está por agotarse.</p>
+      </div>
+      <div class="chat-mini">
+        <div class="chat-mini-header"><div class="chat-mini-av"><img src="logo.png.png" alt="BF" style="width:100%;height:100%;object-fit:cover;" /></div><div><div class="chat-mini-name">BullFlow</div></div></div>
+        <div class="chat-mini-body">
+          <div class="cm s">Vendí 5 empanadas a $1500<div class="cm-time">11:30 ✓✓</div></div>
+          <div class="cm r">🛒 <b>Venta registrada</b><br/>📦 Stock actualizado<br/><br/>💰 Total: $7.500<br/>📦 Empanadas restantes: <b>8 unidades</b><div class="cm-time">11:30</div></div>
+          <div class="cm r">🔔 <b>Alerta de stock bajo</b><br/>Empanadas quedaron en 8 unidades. ¿Querés registrar una compra?<div class="cm-time">11:31</div></div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- PANEL WEB -->
+<section class="py-24 px-6" style="background:var(--bg-mid)">
+  <div class="max-w-5xl mx-auto">
+    <div class="text-center mb-16 fade">
+      <p class="section-eyebrow mb-4">Panel web</p>
+      <h2 class="text-4xl md:text-5xl font-extrabold tracking-tight mb-4" style="color:var(--text)">También tenés tu<br/>panel web</h2>
+      <p style="color:var(--muted)" class="max-w-lg mx-auto text-lg leading-relaxed">Además del chat, accedés a un panel web con todos tus números organizados: gastos por categoría, inventario en tiempo real y últimos movimientos.</p>
+    </div>
+
+    <div class="grid grid-cols-1 md:grid-cols-2 gap-12 items-center fade">
+      <!-- Slider de capturas -->
+      <div class="panel-slider">
+        <div class="panel-slide active"><img src="panel1.png" alt="Panel - Resumen y gastos por categoría" /></div>
+        <div class="panel-slide"><img src="panel2.png" alt="Panel - Inventario y movimientos" /></div>
+        <div class="panel-slide"><img src="panel3.png" alt="Panel - Gastos detallados" /></div>
+        <div class="panel-arrows">
+          <button class="panel-arrow" onclick="panelSlide(-1)">
+            <svg viewBox="0 0 24 24"><polyline points="15 18 9 12 15 6"/></svg>
+          </button>
+          <button class="panel-arrow" onclick="panelSlide(1)">
+            <svg viewBox="0 0 24 24"><polyline points="9 18 15 12 9 6"/></svg>
+          </button>
+        </div>
+        <div class="panel-nav">
+          <button class="panel-dot active" onclick="goPanelSlide(0)"></button>
+          <button class="panel-dot" onclick="goPanelSlide(1)"></button>
+          <button class="panel-dot" onclick="goPanelSlide(2)"></button>
+        </div>
+      </div>
+
+      <!-- Texto con features -->
+      <div class="space-y-6">
+        <div class="flex items-start gap-4">
+          <div style="width:40px;height:40px;border-radius:10px;background:rgba(22,163,74,0.08);display:flex;align-items:center;justify-content:center;flex-shrink:0;">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="var(--green)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"/></svg>
+          </div>
+          <div>
+            <p class="font-bold text-sm mb-1" style="color:var(--text)">Gastos por categoría</p>
+            <p class="text-sm leading-relaxed" style="color:var(--muted)">Visualizás cuánto gastaste en comida, mercadería, servicios y más, con barras de progreso claras.</p>
+          </div>
+        </div>
+        <div class="flex items-start gap-4">
+          <div style="width:40px;height:40px;border-radius:10px;background:rgba(22,163,74,0.08);display:flex;align-items:center;justify-content:center;flex-shrink:0;">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="var(--green)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 7H4a2 2 0 00-2 2v6a2 2 0 002 2h16a2 2 0 002-2V9a2 2 0 00-2-2z"/><path d="M16 21V5a2 2 0 00-2-2h-4a2 2 0 00-2 2v16"/></svg>
+          </div>
+          <div>
+            <p class="font-bold text-sm mb-1" style="color:var(--text)">Inventario en tiempo real</p>
+            <p class="text-sm leading-relaxed" style="color:var(--muted)">Cada producto con su stock actualizado. Verde cuando hay stock, rojo cuando se agotó.</p>
+          </div>
+        </div>
+        <div class="flex items-start gap-4">
+          <div style="width:40px;height:40px;border-radius:10px;background:rgba(22,163,74,0.08);display:flex;align-items:center;justify-content:center;flex-shrink:0;">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="var(--green)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
+          </div>
+          <div>
+            <p class="font-bold text-sm mb-1" style="color:var(--text)">Últimos movimientos</p>
+            <p class="text-sm leading-relaxed" style="color:var(--muted)">Historial de todos tus gastos y ventas con fecha, categoría y monto. Filtrá por día, semana o mes.</p>
+          </div>
+        </div>
+        <div class="flex items-start gap-4">
+          <div style="width:40px;height:40px;border-radius:10px;background:rgba(22,163,74,0.08);display:flex;align-items:center;justify-content:center;flex-shrink:0;">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="var(--green)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="1" x2="12" y2="23"/><path d="M17 5H9.5a3.5 3.5 0 000 7h5a3.5 3.5 0 010 7H6"/></svg>
+          </div>
+          <div>
+            <p class="font-bold text-sm mb-1" style="color:var(--text)">Ganancia neta al instante</p>
+            <p class="text-sm leading-relaxed" style="color:var(--muted)">Ventas menos gastos = tu ganancia real. Siempre visible, siempre actualizada.</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- TESTIMONIOS -->
+<section class="py-24 px-6" style="background:var(--bg-mid)">
+  <div class="max-w-5xl mx-auto">
+    <div class="text-center mb-14 fade">
+      <p class="section-eyebrow mb-4">Testimonios</p>
+      <h2 class="text-4xl font-extrabold tracking-tight" style="color:var(--text)">Lo que dicen nuestros usuarios</h2>
+      <p class="max-w-2xl mx-auto mt-4 text-lg" style="color:var(--muted)">Compartí tu experiencia con BullFlow y ayudá a otros negocios a dar el siguiente paso.</p>
+    </div>
+
+    <div class="testimonial-form fade mb-10">
+      <form id="testimonial-form" novalidate>
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
+          <div>
+            <label for="testimonial-name" class="field-label">Nombre</label>
+            <input id="testimonial-name" name="nombre" type="text" class="field-input" placeholder="Tu nombre" required />
+          </div>
+          <div>
+            <label for="testimonial-business" class="field-label">Tipo de negocio</label>
+            <input id="testimonial-business" name="negocio" type="text" class="field-input" placeholder="Ej: Almacén de barrio" required />
+          </div>
+        </div>
+
+        <div class="mb-4">
+          <label for="testimonial-text" class="field-label">Testimonio</label>
+          <textarea id="testimonial-text" name="testimonio" rows="4" class="field-input" placeholder="Contanos cómo te ayuda BullFlow en tu día a día" required></textarea>
+        </div>
+
+        <div class="mb-5">
+          <label class="field-label">Calificación</label>
+          <div class="star-picker" id="star-picker" aria-label="Calificación de 1 a 5 estrellas">
+            <button type="button" class="rating-star" data-rating="1" aria-label="1 estrella">★</button>
+            <button type="button" class="rating-star" data-rating="2" aria-label="2 estrellas">★</button>
+            <button type="button" class="rating-star" data-rating="3" aria-label="3 estrellas">★</button>
+            <button type="button" class="rating-star" data-rating="4" aria-label="4 estrellas">★</button>
+            <button type="button" class="rating-star" data-rating="5" aria-label="5 estrellas">★</button>
+          </div>
+          <input type="hidden" id="testimonial-rating" name="calificacion" required />
+        </div>
+
+        <div class="flex flex-col sm:flex-row sm:items-center gap-3">
+          <button type="submit" class="btn-primary">Enviar testimonio</button>
+          <p id="testimonial-feedback" class="text-sm font-semibold hidden"></p>
+        </div>
+      </form>
+    </div>
+
+    <div id="testimonials-grid" class="grid grid-cols-1 md:grid-cols-3 gap-5"></div>
+    <div class="testimonials-more-wrap">
+      <button id="testimonials-more" class="btn-primary hidden" type="button">Ver más testimonios</button>
+    </div>
+  </div>
+</section>
+
+<!-- PRICING -->
+<section id="precios" class="py-24 px-6" style="background:var(--bg-deep)">
+  <div class="max-w-4xl mx-auto">
+    <div class="text-center mb-14 fade">
+      <p class="section-eyebrow mb-4">Planes</p>
+      <h2 class="text-4xl md:text-5xl font-extrabold tracking-tight mb-3" style="color:var(--text)">Elegí tu plan</h2>
+      <p style="color:var(--muted)">Sin tarjeta de crédito. Empezá gratis hoy.</p>
+    </div>
+    <div class="grid grid-cols-1 md:grid-cols-2 gap-6 max-w-3xl mx-auto">
+      <div class="plan-card fade">
+        <p class="section-eyebrow mb-4">Personal</p>
+        <h3 class="text-xl font-bold mb-1" style="color:var(--text)">Para gastos personales</h3>
+        <p style="color:var(--muted)" class="text-sm mb-6">Ordená tus finanzas personales</p>
+        <div class="mb-8"><span class="text-4xl font-extrabold" style="color:var(--text)">$6.000</span><span style="color:var(--muted)" class="text-sm ml-1">ARS/mes</span></div>
+        <ul class="space-y-3 mb-8 text-sm">
+          <li class="flex items-start gap-2.5" style="color:var(--text)"><span style="color:var(--green)" class="mt-0.5 flex-shrink-0">✓</span>Gastos por texto, audio y foto</li>
+          <li class="flex items-start gap-2.5" style="color:var(--text)"><span style="color:var(--green)" class="mt-0.5 flex-shrink-0">✓</span>Reportes semanales y mensuales</li>
+          <li class="flex items-start gap-2.5" style="color:var(--text)"><span style="color:var(--green)" class="mt-0.5 flex-shrink-0">✓</span>Panel web personal</li>
+          <li class="flex items-start gap-2.5" style="color:var(--text)"><span style="color:var(--green)" class="mt-0.5 flex-shrink-0">✓</span>Notificaciones automáticas</li>
+        </ul>
+        <button onclick="openWA('Personal')" class="btn-primary w-full justify-center">Empezar con Personal</button>
+      </div>
+      <div class="plan-card featured fade" style="position:relative; transition-delay:.1s">
+        <div class="absolute -top-3.5 left-6 text-xs font-bold px-3 py-1 rounded-full" style="background:var(--green);color:white;letter-spacing:0.05em">MÁS COMPLETO</div>
+        <p class="section-eyebrow mb-4 mt-2">Negocio</p>
+        <h3 class="text-xl font-bold mb-1" style="color:var(--text)">Para tu negocio</h3>
+        <p style="color:var(--muted)" class="text-sm mb-6">Ventas, stock, y control total desde WhatsApp</p>
+        <div class="mb-8"><span class="text-4xl font-extrabold" style="color:var(--text)">$15.000</span><span style="color:var(--muted)" class="text-sm ml-1">ARS/mes</span></div>
+        <ul class="space-y-3 mb-8 text-sm">
+          <li class="flex items-start gap-2.5" style="color:var(--text)"><span style="color:var(--green)" class="mt-0.5 flex-shrink-0">✓</span>Todo lo del plan Personal</li>
+          <li class="flex items-start gap-2.5" style="color:var(--text)"><span style="color:var(--green)" class="mt-0.5 flex-shrink-0">✓</span>Ventas y ganancias</li>
+          <li class="flex items-start gap-2.5" style="color:var(--text)"><span style="color:var(--green)" class="mt-0.5 flex-shrink-0">✓</span>Stock e inventario</li>
+          <li class="flex items-start gap-2.5" style="color:var(--text)"><span style="color:var(--green)" class="mt-0.5 flex-shrink-0">✓</span>Alertas de stock bajo</li>
+          <li class="flex items-start gap-2.5" style="color:var(--text)"><span style="color:var(--green)" class="mt-0.5 flex-shrink-0">✓</span>Panel web avanzado</li>
+        </ul>
+        <button onclick="openWA('Negocio')" class="btn-primary w-full justify-center">Empezar con Negocio</button>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- CTA FINAL -->
+<section class="py-24 px-6" style="background:var(--bg-mid); border-top: 1px solid var(--border)">
+  <div class="max-w-3xl mx-auto text-center fade">
+    <p class="section-eyebrow mb-6">Empezá ahora</p>
+    <h2 class="text-4xl md:text-5xl font-extrabold mb-5 tracking-tight leading-tight" style="color:var(--text)">Ya tenés lo que necesitás.<br/><span style="color:var(--green)">WhatsApp.</span></h2>
+    <p style="color:var(--muted)" class="text-lg mb-10 leading-relaxed">Sin instalaciones. Sin planillas. En 2 minutos estás registrando tu primer gasto.</p>
+    <button onclick="openWA()" class="inline-flex items-center gap-3 font-bold text-base px-9 py-4 rounded-xl transition-all hover:-translate-y-1" style="background:var(--green);color:white;box-shadow:0 8px 28px rgba(22,163,74,0.25)">
+      <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347z"/><path d="M12 0C5.373 0 0 5.373 0 12c0 2.117.549 4.103 1.51 5.829L.057 23.93l6.255-1.439A11.945 11.945 0 0012 24c6.627 0 12-5.373 12-12S18.627 0 12 0zm0 21.818a9.818 9.818 0 01-5.006-1.37l-.36-.213-3.712.853.879-3.609-.235-.371A9.818 9.818 0 1112 21.818z"/></svg>
+      Escribir a BullFlow
+    </button>
+  </div>
+</section>
+
+<!-- FOOTER -->
+<footer style="background:var(--bg-deep); border-top: 1px solid var(--border)" class="py-7 px-6">
+  <div class="max-w-6xl mx-auto flex flex-col items-center gap-4 text-center">
+    <img src="logo.png.png" alt="BullFlow" style="height:60px;width:auto;" />
+    <p style="color:var(--muted)" class="text-sm">© 2026 BullFlow. Todos los derechos reservados.</p>
+    <p style="color:var(--muted)" class="text-sm max-w-2xl">BullFlow es una marca comercial operada por Emiliano Guevara, Argentina.</p>
+    <div class="flex flex-wrap items-center justify-center gap-x-4 gap-y-2 text-sm font-semibold" style="color:var(--text)">
+      <a href="contacto.html" class="hover:text-[var(--green)] transition-colors">Contacto</a>
+      <a href="privacidad.html" class="hover:text-[var(--green)] transition-colors">Política de Privacidad</a>
+      <a href="terminos.html" class="hover:text-[var(--green)] transition-colors">Términos y Condiciones</a>
+      <a href="aviso-ia.html" class="hover:text-[var(--green)] transition-colors">Aviso de IA</a>
+    </div>
+  </div>
+</footer>
+
+<script>
+  function openWA(plan) {
+    const numero = '5492622541728';
+    const msgs = { Personal: 'Hola BullFlow, quiero el plan Personal', Negocio: 'Hola BullFlow, quiero el plan Negocio', default: 'Hola BullFlow, quiero empezar gratis' };
+    window.open(`https://wa.me/${numero}?text=${encodeURIComponent(msgs[plan] || msgs.default)}`, '_blank');
+  }
+
+  // Hero slideshow
+  const slides = document.querySelectorAll('.hero-slide');
+  const dots = document.querySelectorAll('.hero-dot');
+  let current = 0, timer;
+  function goSlide(n) {
+    slides[current].classList.remove('active'); dots[current].classList.remove('active');
+    current = n; slides[current].classList.add('active'); dots[current].classList.add('active');
+    clearInterval(timer); timer = setInterval(() => goSlide((current + 1) % slides.length), 5000);
+  }
+  timer = setInterval(() => goSlide((current + 1) % slides.length), 5000);
+
+  // Panel slideshow
+  const panelSlides = document.querySelectorAll('.panel-slide');
+  const panelDots = document.querySelectorAll('.panel-dot');
+  let panelCurrent = 0;
+  function goPanelSlide(n) {
+    panelSlides[panelCurrent].classList.remove('active'); panelDots[panelCurrent].classList.remove('active');
+    panelCurrent = n; panelSlides[panelCurrent].classList.add('active'); panelDots[panelCurrent].classList.add('active');
+  }
+  function panelSlide(dir) { goPanelSlide((panelCurrent + dir + panelSlides.length) % panelSlides.length); }
+  setInterval(() => panelSlide(1), 4000);
+
+  // Navbar
+  const navbar = document.getElementById('navbar');
+  const navPreciosLink = document.getElementById('nav-precios-link');
+  window.addEventListener('scroll', () => {
+    const scrolled = window.scrollY > window.innerHeight - 80;
+    navbar.classList.toggle('scrolled', scrolled);
+    navPreciosLink.style.color = scrolled ? 'var(--text)' : 'white';
+    document.getElementById('announce-wrap').style.transform = window.scrollY > 50 ? 'translateY(-100%)' : '';
+    document.getElementById('announce-wrap').style.transition = 'transform 0.3s';
+    navbar.style.top = window.scrollY > 50 ? '0' : '36px';
+  });
+
+  // Fade observer
+  const obs = new IntersectionObserver(entries => {
+    entries.forEach(e => { if (e.isIntersecting) { e.target.classList.add('in'); obs.unobserve(e.target); } });
+  }, { threshold: 0.1 });
+  document.querySelectorAll('.fade').forEach(el => obs.observe(el));
+
+  // Chat animado
+  const messages = [
+    { type: 'recv', text: '👋 ¡Hola! Soy <b>BullFlow</b> 🐂<br><br><i>¿Qué querés registrar? Escribí tu gasto, venta o \'ayuda\'</i>', time: '10:55' },
+    { type: 'sent', text: 'Gasté $25mil en mercadería', time: '10:56 ✓✓' },
+    { type: 'typing', duration: 1200 },
+    { type: 'recv', text: '✅ <b>Gasto registrado</b><br><br>💰 Monto: ARS 25.000<br>📁 Categoría: 🧳 Mercadería<br>🕐 Fecha: 22/06/2026', time: '10:56' },
+    { type: 'sent', text: 'Reporte', time: '10:56 ✓✓' },
+    { type: 'typing', duration: 1400 },
+    { type: 'recv', text: '📊 <b>Reporte junio</b><br><br>💸 Gastos: $336.200<br>🛒 Ventas: $150.000<br>💰 <b style="color:#4ade80">Ganancia: $95.500</b>', time: '10:56' },
+  ];
+  const chatBody = document.getElementById('chat-body');
+  let msgIndex = 0;
+  function addTyping() { const el = document.createElement('div'); el.className = 'wa-typing'; el.innerHTML = '<span></span><span></span><span></span>'; chatBody.appendChild(el); setTimeout(() => el.classList.add('show'), 50); return el; }
+  function addMessage(msg) { const el = document.createElement('div'); el.className = `wa-msg ${msg.type === 'sent' ? 'sent' : 'recv'}`; el.innerHTML = `${msg.text}<div class="wa-time">${msg.time}</div>`; chatBody.appendChild(el); setTimeout(() => el.classList.add('show'), 50); chatBody.scrollTop = chatBody.scrollHeight; }
+  function runChat() {
+    if (msgIndex >= messages.length) { setTimeout(() => { chatBody.innerHTML = ''; msgIndex = 0; setTimeout(runChat, 800); }, 4000); return; }
+    const m = messages[msgIndex++];
+    if (m.type === 'typing') { const t = addTyping(); setTimeout(() => { t.remove(); runChat(); }, m.duration); }
+    else { addMessage(m); setTimeout(runChat, m.type === 'sent' ? 800 : 1200); }
+  }
+  setTimeout(runChat, 800);
+
+  // Contador animado
+  function animateCounter(id, target, duration, prefix='', suffix='') {
+    const el = document.getElementById(id);
+    const start = performance.now();
+    function update(now) {
+      const progress = Math.min((now - start) / duration, 1);
+      const ease = 1 - Math.pow(1 - progress, 3);
+      el.textContent = prefix + Math.floor(ease * target) + suffix;
+      if (progress < 1) requestAnimationFrame(update);
+      else el.textContent = prefix + target + suffix;
+    }
+    requestAnimationFrame(update);
+  }
+  const statsObs = new IntersectionObserver(entries => {
+    if (entries[0].isIntersecting) {
+      animateCounter('cnt1', 50, 1800, '+');
+      animateCounter('cnt2', 2, 1000);
+      animateCounter('cnt3', 100, 1500);
+      animateCounter('cnt4', 0, 500);
+      statsObs.disconnect();
+    }
+  }, { threshold: 0.5 });
+  statsObs.observe(document.querySelector('.stats-band'));
+
+  // Testimonios con localStorage + Formspree
+  const TESTIMONIALS_STORAGE_KEY = 'bullflow_testimonials_v1';
+  const TESTIMONIAL_EMAIL_ENDPOINT = 'https://formspree.io/f/mdaqoynd';
+  const TESTIMONIALS_INITIAL_VISIBLE = 6;
+  let testimonialsVisible = TESTIMONIALS_INITIAL_VISIBLE;
+
+  const defaultTestimonials = [
+    { id: 'd1', name: 'Agustina G.', business: 'Emprendedora — Ropa', text: 'Antes terminaba el mes sin saber si había ganado o perdido. Ahora en dos mensajes ya sé exactamente cómo me fue.', rating: 5 },
+    { id: 'd2', name: 'Walter Q.', business: 'Dueño — Almacén de barrio', text: 'Lo uso desde el WhatsApp que ya tenía. Sin bajar nada, sin aprender nada nuevo. Fue inmediato.', rating: 5 },
+    { id: 'd3', name: 'Francisco R.', business: 'Servicio de Dron — Negocio propio', text: 'El reporte mensual me salvó. Descubrí que estaba gastando el doble en mercadería de lo que pensaba.', rating: 5 }
+  ];
+
+  function safeParseTestimonials() {
+    try {
+      const raw = localStorage.getItem(TESTIMONIALS_STORAGE_KEY);
+      if (!raw) return [];
+      const parsed = JSON.parse(raw);
+      return Array.isArray(parsed) ? parsed : [];
+    } catch (err) {
+      return [];
+    }
+  }
+
+  function saveTestimonials(items) {
+    localStorage.setItem(TESTIMONIALS_STORAGE_KEY, JSON.stringify(items));
+  }
+
+  function avatarColorFromName(name) {
+    const palette = ['#16a34a', '#0369a1', '#7c3aed', '#ea580c', '#0f766e', '#be123c'];
+    let hash = 0;
+    for (let i = 0; i < name.length; i++) hash = (hash << 5) - hash + name.charCodeAt(i);
+    return palette[Math.abs(hash) % palette.length];
+  }
+
+  function createStars(rating) {
+    return '★'.repeat(rating) + '☆'.repeat(5 - rating);
+  }
+
+  const testimonialForm = document.getElementById('testimonial-form');
+  const testimonialGrid = document.getElementById('testimonials-grid');
+  const testimonialMoreBtn = document.getElementById('testimonials-more');
+  const testimonialFeedback = document.getElementById('testimonial-feedback');
+  const ratingInput = document.getElementById('testimonial-rating');
+  const starPicker = document.getElementById('star-picker');
+  const starButtons = Array.from(document.querySelectorAll('.rating-star'));
+  let selectedRating = 0;
+  let customTestimonials = safeParseTestimonials();
+
+  function setFeedback(message, isError) {
+    testimonialFeedback.textContent = message;
+    testimonialFeedback.style.color = isError ? '#b91c1c' : 'var(--green)';
+    testimonialFeedback.classList.remove('hidden');
+  }
+
+  function paintStars(value) {
+    starButtons.forEach((btn, idx) => btn.classList.toggle('active', idx < value));
+  }
+
+  starButtons.forEach(btn => {
+    btn.addEventListener('mouseenter', () => paintStars(Number(btn.dataset.rating)));
+    btn.addEventListener('click', () => {
+      selectedRating = Number(btn.dataset.rating);
+      ratingInput.value = String(selectedRating);
+      paintStars(selectedRating);
+    });
+  });
+
+  starPicker.addEventListener('mouseleave', () => paintStars(selectedRating));
+
+  function renderTestimonials() {
+    const allTestimonials = [...customTestimonials, ...defaultTestimonials];
+    testimonialGrid.innerHTML = '';
+    const visibleItems = allTestimonials.slice(0, testimonialsVisible);
+
+    visibleItems.forEach((item, idx) => {
+      const card = document.createElement('div');
+      card.className = 'testi-card fade in';
+      card.style.transitionDelay = `${Math.min(idx, 2) * 0.08}s`;
+
+      const stars = document.createElement('div');
+      stars.className = 'stars';
+      stars.textContent = createStars(item.rating);
+
+      const text = document.createElement('p');
+      text.className = 'testi-text';
+      text.textContent = `"${item.text}"`;
+
+      const author = document.createElement('div');
+      author.className = 'testi-author';
+
+      const avatar = document.createElement('div');
+      avatar.className = 'testi-avatar';
+      avatar.style.background = avatarColorFromName(item.name);
+      avatar.textContent = (item.name || '?').trim().charAt(0).toUpperCase();
+
+      const meta = document.createElement('div');
+      const nameEl = document.createElement('div');
+      nameEl.className = 'testi-name';
+      nameEl.textContent = item.name;
+      const roleEl = document.createElement('div');
+      roleEl.className = 'testi-role';
+      roleEl.textContent = item.business;
+
+      meta.appendChild(nameEl);
+      meta.appendChild(roleEl);
+      author.appendChild(avatar);
+      author.appendChild(meta);
+
+      card.appendChild(stars);
+      card.appendChild(text);
+      card.appendChild(author);
+      testimonialGrid.appendChild(card);
+    });
+
+    const hasMoreThanSix = allTestimonials.length > 6;
+    const hasMoreToShow = testimonialsVisible < allTestimonials.length;
+    testimonialMoreBtn.classList.toggle('hidden', !(hasMoreThanSix && hasMoreToShow));
+  }
+
+  testimonialMoreBtn.addEventListener('click', () => {
+    testimonialsVisible += 3;
+    renderTestimonials();
+  });
+
+  async function sendTestimonialEmail(payload) {
+    if (TESTIMONIAL_EMAIL_ENDPOINT.includes('your_form_id')) return;
+    const res = await fetch(TESTIMONIAL_EMAIL_ENDPOINT, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        'Accept': 'application/json'
+      },
+      body: JSON.stringify(payload)
+    });
+    if (!res.ok) throw new Error('No se pudo enviar por email');
+  }
+
+  testimonialForm.addEventListener('submit', async (event) => {
+    event.preventDefault();
+    const name = document.getElementById('testimonial-name').value.trim();
+    const business = document.getElementById('testimonial-business').value.trim();
+    const text = document.getElementById('testimonial-text').value.trim();
+
+    if (!name || !business || !text || !selectedRating) {
+      setFeedback('Completá todos los campos y elegí una calificación.', true);
+      return;
+    }
+
+    const submittedRating = selectedRating;
+
+    const newTestimonial = {
+      id: `u-${Date.now()}`,
+      name,
+      business,
+      text,
+      rating: submittedRating,
+      createdAt: new Date().toISOString()
+    };
+
+    customTestimonials.unshift(newTestimonial);
+    saveTestimonials(customTestimonials);
+    renderTestimonials();
+
+    testimonialForm.reset();
+    selectedRating = 0;
+    ratingInput.value = '';
+    paintStars(0);
+    setFeedback('¡Gracias por tu testimonio!', false);
+
+    try {
+      await sendTestimonialEmail({
+        nombre: name,
+        negocio: business,
+        testimonio: text,
+        calificacion: submittedRating,
+        origen: 'Web BullFlow'
+      });
+    } catch (err) {
+      console.warn('No se pudo enviar el testimonio por email.', err);
+    }
+  });
+
+  renderTestimonials();
+</script>
+</body>
+</html>
