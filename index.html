@@ -26,13 +26,8 @@
 
     body { background: var(--bg-deep); color: var(--text); }
 
-    .announce-bar { background: var(--green); color: white; text-align: center; padding: 10px 16px; font-size: 0.8rem; font-weight: 600; letter-spacing: 0.01em; position: relative; z-index: 60; }
-    .announce-bar a { text-decoration: underline; color: white; opacity: 0.9; }
-    .announce-bar a:hover { opacity: 1; }
-
-    #navbar { transition: background 0.3s, box-shadow 0.3s; background: transparent; position: fixed; top: 36px; left: 0; right: 0; z-index: 50; }
-    #navbar.scrolled { background: rgba(248,249,250,0.97); backdrop-filter: blur(16px); box-shadow: 0 1px 0 rgba(0,0,0,0.08); top: 0; }
-    .announce-bar-wrap { position: fixed; top: 0; left: 0; right: 0; z-index: 60; }
+    #navbar { transition: background 0.3s, box-shadow 0.3s; background: transparent; position: fixed; top: 0; left: 0; right: 0; z-index: 50; }
+    #navbar.scrolled { background: rgba(248,249,250,0.97); backdrop-filter: blur(16px); box-shadow: 0 1px 0 rgba(0,0,0,0.08); }
 
     .btn-primary { background: var(--green); color: #fff; font-weight: 700; border-radius: 8px; padding: 0.7rem 1.4rem; display: inline-flex; align-items: center; gap: 0.45rem; transition: background 0.2s, transform 0.15s, box-shadow 0.2s; font-size: 0.875rem; letter-spacing: 0.01em; }
     .btn-primary:hover { background: #166534; transform: translateY(-1px); box-shadow: 0 8px 24px rgba(22,163,74,0.3); }
@@ -158,13 +153,6 @@
 </head>
 <body>
 
-<!-- ANNOUNCEMENT BAR -->
-<div class="announce-bar-wrap" id="announce-wrap">
-  <div class="announce-bar">
-    🎉 Probalo una semana gratis, sin tarjeta de crédito. &nbsp;<a href="#precios" onclick="document.getElementById('precios').scrollIntoView({behavior:'smooth'})">Ver planes →</a>
-  </div>
-</div>
-
 <!-- NAVBAR -->
 <nav id="navbar">
   <div class="max-w-6xl mx-auto px-6 py-3 flex items-center justify-between">
@@ -202,6 +190,7 @@
         <div class="rubro-chip"><svg viewBox="0 0 24 24"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg>Gastronomía</div>
         <div class="rubro-chip"><svg viewBox="0 0 24 24"><rect x="2" y="3" width="20" height="14" rx="2"/><path d="M8 21h8M12 17v4"/></svg>Ropa y moda</div>
         <div class="rubro-chip"><svg viewBox="0 0 24 24"><line x1="12" y1="1" x2="12" y2="23"/><path d="M17 5H9.5a3.5 3.5 0 000 7h5a3.5 3.5 0 010 7H6"/></svg>Finanzas</div>
+        <div class="rubro-chip"><svg viewBox="0 0 24 24"><rect x="2" y="6" width="20" height="12" rx="2"/><path d="M2 10h20"/><circle cx="17" cy="12" r="1.5"/></svg>Gastos personales</div>
       </div>
       <div class="flex flex-col sm:flex-row gap-3">
         <button onclick="openWA()" class="btn-primary">
@@ -558,9 +547,6 @@
     const scrolled = window.scrollY > window.innerHeight - 80;
     navbar.classList.toggle('scrolled', scrolled);
     navPreciosLink.style.color = scrolled ? 'var(--text)' : 'white';
-    document.getElementById('announce-wrap').style.transform = window.scrollY > 50 ? 'translateY(-100%)' : '';
-    document.getElementById('announce-wrap').style.transition = 'transform 0.3s';
-    navbar.style.top = window.scrollY > 50 ? '0' : '36px';
   });
 
   // Fade observer
