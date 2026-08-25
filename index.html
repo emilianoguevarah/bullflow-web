@@ -195,7 +195,7 @@
       <div class="flex flex-col sm:flex-row gap-3">
         <button onclick="openWA()" class="btn-primary">
           <svg width="17" height="17" viewBox="0 0 24 24" fill="currentColor"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347z"/><path d="M12 0C5.373 0 0 5.373 0 12c0 2.117.549 4.103 1.51 5.829L.057 23.93l6.255-1.439A11.945 11.945 0 0012 24c6.627 0 12-5.373 12-12S18.627 0 12 0zm0 21.818a9.818 9.818 0 01-5.006-1.37l-.36-.213-3.712.853.879-3.609-.235-.371A9.818 9.818 0 1112 21.818z"/></svg>
-          Probalo gratis
+          Probá 7 días gratis
         </button>
         <button onclick="document.getElementById('como-funciona').scrollIntoView({behavior:'smooth'})" class="btn-outline-white">Ver cómo funciona →</button>
       </div>
@@ -448,14 +448,17 @@
     <div class="text-center mb-14 fade">
       <p class="section-eyebrow mb-4">Planes</p>
       <h2 class="text-4xl md:text-5xl font-extrabold tracking-tight mb-3" style="color:var(--text)">Elegí tu plan</h2>
-      <p style="color:var(--muted)">Sin tarjeta de crédito. Empezá gratis hoy.</p>
+      <p style="color:var(--muted)">7 días gratis en cualquier plan. Sin tarjeta de crédito.</p>
     </div>
     <div class="grid grid-cols-1 md:grid-cols-2 gap-6 max-w-3xl mx-auto">
       <div class="plan-card fade">
         <p class="section-eyebrow mb-4">Personal</p>
         <h3 class="text-xl font-bold mb-1" style="color:var(--text)">Para gastos personales</h3>
         <p style="color:var(--muted)" class="text-sm mb-6">Ordená tus finanzas personales</p>
-        <div class="mb-8"><span class="text-4xl font-extrabold" style="color:var(--text)">$6.000</span><span style="color:var(--muted)" class="text-sm ml-1">ARS/mes</span></div>
+        <div class="mb-8">
+          <span class="text-4xl font-extrabold" style="color:var(--text)">$6.000</span><span style="color:var(--muted)" class="text-sm ml-1">ARS/mes</span>
+          <p class="text-sm font-semibold mt-2" style="color:var(--green)">✓ 7 días gratis, después $6.000/mes</p>
+        </div>
         <ul class="space-y-3 mb-8 text-sm">
           <li class="flex items-start gap-2.5" style="color:var(--text)"><span style="color:var(--green)" class="mt-0.5 flex-shrink-0">✓</span>Gastos por texto, audio y foto</li>
           <li class="flex items-start gap-2.5" style="color:var(--text)"><span style="color:var(--green)" class="mt-0.5 flex-shrink-0">✓</span>Reportes semanales y mensuales</li>
@@ -469,7 +472,10 @@
         <p class="section-eyebrow mb-4 mt-2">Negocio</p>
         <h3 class="text-xl font-bold mb-1" style="color:var(--text)">Para tu negocio</h3>
         <p style="color:var(--muted)" class="text-sm mb-6">Ventas, stock, y control total desde WhatsApp</p>
-        <div class="mb-8"><span class="text-4xl font-extrabold" style="color:var(--text)">$15.000</span><span style="color:var(--muted)" class="text-sm ml-1">ARS/mes</span></div>
+        <div class="mb-8">
+          <span class="text-4xl font-extrabold" style="color:var(--text)">$15.000</span><span style="color:var(--muted)" class="text-sm ml-1">ARS/mes</span>
+          <p class="text-sm font-semibold mt-2" style="color:var(--green)">✓ 7 días gratis, después $15.000/mes</p>
+        </div>
         <ul class="space-y-3 mb-8 text-sm">
           <li class="flex items-start gap-2.5" style="color:var(--text)"><span style="color:var(--green)" class="mt-0.5 flex-shrink-0">✓</span>Todo lo del plan Personal</li>
           <li class="flex items-start gap-2.5" style="color:var(--text)"><span style="color:var(--green)" class="mt-0.5 flex-shrink-0">✓</span>Ventas y ganancias</li>
@@ -480,6 +486,7 @@
         <button onclick="openWA('Negocio')" class="btn-primary w-full justify-center">Empezar con Negocio</button>
       </div>
     </div>
+    <p class="text-center text-sm mt-8 max-w-lg mx-auto" style="color:var(--muted)">Al terminar la semana gratis te escribimos por WhatsApp para que elijas tu plan y completes el pago con un link. Sin cobros automáticos.</p>
   </div>
 </section>
 
@@ -488,7 +495,7 @@
   <div class="max-w-3xl mx-auto text-center fade">
     <p class="section-eyebrow mb-6">Empezá ahora</p>
     <h2 class="text-4xl md:text-5xl font-extrabold mb-5 tracking-tight leading-tight" style="color:var(--text)">Ya tenés lo que necesitás.<br/><span style="color:var(--green)">WhatsApp.</span></h2>
-    <p style="color:var(--muted)" class="text-lg mb-10 leading-relaxed">Sin instalaciones. Sin planillas. En 2 minutos estás registrando tu primer gasto.</p>
+    <p style="color:var(--muted)" class="text-lg mb-10 leading-relaxed">Sin instalaciones. Sin planillas. Probá 7 días gratis y en 2 minutos estás registrando tu primer gasto.</p>
     <button onclick="openWA()" class="inline-flex items-center gap-3 font-bold text-base px-9 py-4 rounded-xl transition-all hover:-translate-y-1" style="background:var(--green);color:white;box-shadow:0 8px 28px rgba(22,163,74,0.25)">
       <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347z"/><path d="M12 0C5.373 0 0 5.373 0 12c0 2.117.549 4.103 1.51 5.829L.057 23.93l6.255-1.439A11.945 11.945 0 0012 24c6.627 0 12-5.373 12-12S18.627 0 12 0zm0 21.818a9.818 9.818 0 01-5.006-1.37l-.36-.213-3.712.853.879-3.609-.235-.371A9.818 9.818 0 1112 21.818z"/></svg>
       Escribir a BullFlow
@@ -603,7 +610,7 @@
 
   // Testimonios con localStorage + Formspree
   const TESTIMONIALS_STORAGE_KEY = 'bullflow_testimonials_v1';
-  const TESTIMONIAL_EMAIL_ENDPOINT = 'https://formspree.io/f/mdaqoynd';
+  const TESTIMONIAL_EMAIL_ENDPOINT = atob('aHR0cHM6Ly9mb3Jtc3ByZWUuaW8vZi9tZGFxb3luZA==');
   const TESTIMONIALS_INITIAL_VISIBLE = 6;
   let testimonialsVisible = TESTIMONIALS_INITIAL_VISIBLE;
 
