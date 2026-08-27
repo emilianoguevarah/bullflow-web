@@ -21,25 +21,25 @@
     html { scroll-behavior: smooth; }
 
     :root {
-      --bg-deep:    #f8f9fa;
-      --bg-mid:     #eef0f3;
-      --bg-card:    #ffffff;
-      --green:      #16a34a;
-      --green-dim:  #15803d;
-      --green-glow: rgba(22,163,74,0.10);
-      --gold:       #a37a10;
-      --text:       #111827;
-      --muted:      #6b7280;
-      --border:     rgba(0,0,0,0.08);
+      --bg-deep:    #030d1e;
+      --bg-mid:     #0d1830;
+      --bg-card:    #101d3a;
+      --green:      #22c55e;
+      --green-dim:  #16a34a;
+      --green-glow: rgba(34,197,94,0.14);
+      --gold:       #f0b90b;
+      --text:       #f4f6fb;
+      --muted:      #9aa8c7;
+      --border:     rgba(255,255,255,0.10);
     }
 
     body { background: var(--bg-deep); color: var(--text); }
 
     #navbar { transition: background 0.3s, box-shadow 0.3s; background: transparent; position: fixed; top: 0; left: 0; right: 0; z-index: 50; }
-    #navbar.scrolled { background: rgba(248,249,250,0.97); backdrop-filter: blur(16px); box-shadow: 0 1px 0 rgba(0,0,0,0.08); }
+    #navbar.scrolled { background: rgba(3,13,30,0.92); backdrop-filter: blur(16px); box-shadow: 0 1px 0 rgba(255,255,255,0.08); }
 
     .btn-primary { background: var(--green); color: #fff; font-weight: 700; border-radius: 8px; padding: 0.7rem 1.4rem; display: inline-flex; align-items: center; gap: 0.45rem; transition: background 0.2s, transform 0.15s, box-shadow 0.2s; font-size: 0.875rem; letter-spacing: 0.01em; }
-    .btn-primary:hover { background: #166534; transform: translateY(-1px); box-shadow: 0 8px 24px rgba(22,163,74,0.3); }
+    .btn-primary:hover { background: #16a34a; transform: translateY(-1px); box-shadow: 0 8px 24px rgba(34,197,94,0.35); }
 
     .btn-outline-white { border: 2px solid rgba(255,255,255,0.6); color: white; font-weight: 700; border-radius: 8px; padding: 0.7rem 1.4rem; display: inline-flex; align-items: center; gap: 0.45rem; transition: border-color 0.2s, background 0.2s; font-size: 0.875rem; backdrop-filter: blur(4px); background: rgba(255,255,255,0.08); }
     .btn-outline-white:hover { border-color: white; background: rgba(255,255,255,0.15); }
@@ -88,12 +88,18 @@
     .stat-num span { color: var(--green); }
     .stat-label { font-size: 0.78rem; color: var(--muted); margin-top: 0.35rem; font-weight: 500; }
 
-    .problem-card { background: var(--bg-card); border: 1px solid rgba(0,0,0,0.07); border-radius: 14px; padding: 1.6rem; transition: box-shadow 0.2s, transform 0.2s; }
-    .problem-card:hover { box-shadow: 0 8px 32px rgba(0,0,0,0.08); transform: translateY(-2px); }
-    .problem-icon { width: 44px; height: 44px; border-radius: 10px; background: rgba(22,163,74,0.07); display: flex; align-items: center; justify-content: center; margin-bottom: 1rem; }
+    .problem-card { background: var(--bg-card); border: 1px solid rgba(255,255,255,0.08); border-radius: 14px; padding: 1.6rem; transition: border-color 0.2s, transform 0.2s; }
+    .problem-card:hover { border-color: rgba(255,255,255,0.18); transform: translateY(-2px); }
+    .problem-icon { width: 44px; height: 44px; border-radius: 10px; background: rgba(34,197,94,0.1); display: flex; align-items: center; justify-content: center; margin-bottom: 1rem; }
     .problem-icon svg { width: 22px; height: 22px; stroke: var(--green); fill: none; stroke-width: 1.8; stroke-linecap: round; stroke-linejoin: round; }
 
-    .chat-mini { background: #111b21; border-radius: 16px; overflow: hidden; border: 1px solid rgba(0,0,0,0.1); box-shadow: 0 20px 60px rgba(0,0,0,0.12); }
+    .chart-box { position:relative; background: linear-gradient(180deg, rgba(255,255,255,0.02) 0%, rgba(255,255,255,0) 100%); border:1px solid rgba(255,255,255,0.08); border-radius: 20px; padding: 50px 30px 30px; }
+    .chart-box svg { width:100%; height:auto; display:block; overflow:visible; }
+    .chart-label { font-family: 'Open Sans', sans-serif; font-size: 18px; font-weight:800; fill:#f4f6fb; paint-order: stroke; stroke: var(--bg-mid); stroke-width: 8px; stroke-linejoin: round; }
+    .chart-side-tag { font-family: 'Open Sans', sans-serif; font-size:14px; font-weight:800; letter-spacing:0.14em; text-transform:uppercase; }
+    .draw-line { transition: stroke-dashoffset 1.8s cubic-bezier(.2,.7,.2,1); }
+
+    .chat-mini { background: #111b21; border-radius: 16px; overflow: hidden; border: 1px solid rgba(255,255,255,0.08); box-shadow: 0 20px 60px rgba(0,0,0,0.3); }
     .chat-mini-header { background: #202c33; padding: 10px 12px; display: flex; align-items: center; gap: 8px; }
     .chat-mini-av { width: 28px; height: 28px; border-radius: 50%; background: white; display: flex; align-items: center; justify-content: center; overflow: hidden; flex-shrink: 0; }
     .chat-mini-av img { width: 100%; height: 100%; object-fit: cover; }
@@ -109,21 +115,22 @@
     .feature-row.reverse { direction: rtl; }
     .feature-row.reverse > * { direction: ltr; }
 
-    /* PANEL SLIDESHOW */
-    .panel-slider { position: relative; border-radius: 16px; overflow: hidden; box-shadow: 0 24px 64px rgba(0,0,0,0.14); border: 1px solid rgba(0,0,0,0.08); background: #f1f5f9; }
+    .panel-slider { position: relative; border-radius: 16px; overflow: hidden; box-shadow: 0 24px 64px rgba(0,0,0,0.4); border: 1px solid rgba(255,255,255,0.08); background: #0d1830; }
+    .panel-browser-bar { background: #1a2744; padding: 10px 14px; display:flex; align-items:center; gap:6px; }
+    .panel-browser-dot { width:10px; height:10px; border-radius:50%; }
     .panel-slide { display: none; }
     .panel-slide.active { display: block; }
     .panel-slide img { width: 100%; height: auto; display: block; }
-    .panel-nav { display: flex; justify-content: center; gap: 8px; padding: 12px 0 4px; background: white; }
-    .panel-dot { width: 8px; height: 8px; border-radius: 50%; background: rgba(0,0,0,0.15); cursor: pointer; transition: background 0.3s, transform 0.3s; border: none; }
+    .panel-nav { display: flex; justify-content: center; gap: 8px; padding: 12px 0 4px; background: var(--bg-card); }
+    .panel-dot { width: 8px; height: 8px; border-radius: 50%; background: rgba(255,255,255,0.2); cursor: pointer; transition: background 0.3s, transform 0.3s; border: none; }
     .panel-dot.active { background: var(--green); transform: scale(1.2); }
     .panel-arrows { position: absolute; top: 50%; transform: translateY(-50%); width: 100%; display: flex; justify-content: space-between; padding: 0 10px; pointer-events: none; }
-    .panel-arrow { width: 32px; height: 32px; border-radius: 50%; background: rgba(255,255,255,0.9); border: 1px solid rgba(0,0,0,0.1); display: flex; align-items: center; justify-content: center; cursor: pointer; pointer-events: all; transition: background 0.2s, transform 0.15s; box-shadow: 0 2px 8px rgba(0,0,0,0.1); }
+    .panel-arrow { width: 32px; height: 32px; border-radius: 50%; background: rgba(255,255,255,0.9); border: 1px solid rgba(0,0,0,0.1); display: flex; align-items: center; justify-content: center; cursor: pointer; pointer-events: all; transition: background 0.2s, transform 0.15s; box-shadow: 0 2px 8px rgba(0,0,0,0.25); }
     .panel-arrow:hover { background: white; transform: scale(1.08); }
-    .panel-arrow svg { width: 16px; height: 16px; stroke: var(--text); fill: none; stroke-width: 2.5; stroke-linecap: round; stroke-linejoin: round; }
+    .panel-arrow svg { width: 16px; height: 16px; stroke: #111827; fill: none; stroke-width: 2.5; stroke-linecap: round; stroke-linejoin: round; }
 
-    .testi-card { background: var(--bg-card); border: 1px solid rgba(0,0,0,0.07); border-radius: 14px; padding: 1.6rem; transition: box-shadow 0.2s; }
-    .testi-card:hover { box-shadow: 0 8px 32px rgba(0,0,0,0.08); }
+    .testi-card { background: var(--bg-card); border: 1px solid rgba(255,255,255,0.08); border-radius: 14px; padding: 1.6rem; transition: border-color 0.2s; }
+    .testi-card:hover { border-color: rgba(255,255,255,0.18); }
     .stars { color: #f59e0b; font-size: 0.85rem; letter-spacing: 1px; margin-bottom: 0.75rem; }
     .testi-text { font-size: 0.9rem; line-height: 1.65; color: var(--text); margin-bottom: 1rem; font-style: italic; }
     .testi-author { display: flex; align-items: center; gap: 10px; }
@@ -131,25 +138,46 @@
     .testi-name { font-weight: 700; font-size: 0.82rem; color: var(--text); }
     .testi-role { font-size: 0.75rem; color: var(--muted); }
 
-    .testimonial-form { background: var(--bg-card); border: 1px solid rgba(0,0,0,0.08); border-radius: 14px; padding: 1.6rem; box-shadow: 0 8px 28px rgba(0,0,0,0.05); }
+    .testimonial-form { background: var(--bg-card); border: 1px solid rgba(255,255,255,0.08); border-radius: 14px; padding: 1.6rem; box-shadow: 0 8px 28px rgba(0,0,0,0.2); }
     .field-label { display: block; font-size: 0.78rem; font-weight: 700; letter-spacing: 0.08em; text-transform: uppercase; color: var(--gold); margin-bottom: 0.45rem; }
-    .field-input { width: 100%; border: 1px solid rgba(0,0,0,0.12); border-radius: 10px; padding: 0.72rem 0.85rem; font-size: 0.92rem; color: var(--text); background: white; outline: none; transition: border-color 0.2s, box-shadow 0.2s; }
-    .field-input:focus { border-color: var(--green); box-shadow: 0 0 0 3px rgba(22,163,74,0.14); }
+    .field-input { width: 100%; border: 1px solid rgba(255,255,255,0.15); border-radius: 10px; padding: 0.72rem 0.85rem; font-size: 0.92rem; color: var(--text); background: #0d1830; outline: none; transition: border-color 0.2s, box-shadow 0.2s; }
+    .field-input::placeholder { color: var(--muted); opacity: 0.8; }
+    .field-input:focus { border-color: var(--green); box-shadow: 0 0 0 3px rgba(34,197,94,0.18); }
     .star-picker { display: inline-flex; gap: 0.25rem; }
-    .rating-star { font-size: 1.85rem; line-height: 1; color: #d1d5db; background: transparent; border: none; cursor: pointer; padding: 0; transition: transform 0.12s ease, color 0.2s ease; }
+    .rating-star { font-size: 1.85rem; line-height: 1; color: #4b5768; background: transparent; border: none; cursor: pointer; padding: 0; transition: transform 0.12s ease, color 0.2s ease; }
     .rating-star.active { color: #f59e0b; }
     .rating-star:hover { transform: translateY(-1px) scale(1.05); }
     .testimonials-more-wrap { display: flex; justify-content: center; margin-top: 1.25rem; }
 
-    .plan-card { background: var(--bg-card); border: 1px solid rgba(0,0,0,0.08); border-radius: 16px; padding: 2rem; transition: transform 0.2s, box-shadow 0.2s; }
-    .plan-card:hover { transform: translateY(-4px); box-shadow: 0 20px 60px rgba(0,0,0,0.08); }
-    .plan-card.featured { border: 2px solid var(--green); background: linear-gradient(135deg, rgba(22,163,74,0.04) 0%, var(--bg-card) 60%); box-shadow: 0 4px 24px rgba(22,163,74,0.1); }
+    .plan-card { background: var(--bg-card); border: 1px solid rgba(255,255,255,0.08); border-radius: 16px; padding: 2rem; transition: transform 0.2s, border-color 0.2s; }
+    .plan-card:hover { transform: translateY(-4px); border-color: rgba(255,255,255,0.18); }
+    .plan-card.featured { border: 2px solid var(--green); background: linear-gradient(135deg, rgba(34,197,94,0.08) 0%, var(--bg-card) 60%); box-shadow: 0 4px 24px rgba(34,197,94,0.15); }
+
+    .feature-tiles { display:grid; grid-template-columns: 1fr 1fr; gap: 14px; }
+    .feature-tile { background: var(--bg-card); border: 1px solid rgba(255,255,255,0.08); border-left: 3px solid var(--accent); border-radius: 12px; padding: 18px 18px 16px; }
+    .feature-tile-glyph { height: 22px; display:flex; align-items:center; margin-bottom: 10px; }
+    .feature-tile-title { font-weight:800; font-size: 0.92rem; color:var(--text); margin: 0 0 6px; }
+    .feature-tile-desc { font-size: 0.82rem; line-height:1.5; color:var(--muted); margin:0; }
+    .g-bars { display:flex; align-items:flex-end; gap:3px; height:20px; }
+    .g-bars span { width:4px; background:#f0b90b; border-radius:1px; }
+    .g-dots { display:flex; gap:5px; align-items:center; }
+    .g-dots span { width:9px; height:9px; border-radius:50%; }
+    .g-trail { display:flex; gap:4px; align-items:center; }
+    .g-trail span { width:14px; height:3px; border-radius:2px; background:#22c55e; }
+    .g-arrow { color:#22c55e; font-size: 18px; font-weight:900; }
 
     .section-eyebrow { font-size: 0.7rem; font-weight: 700; letter-spacing: 0.12em; text-transform: uppercase; color: var(--gold); }
     .h-rule { width: 36px; height: 2px; background: var(--gold); border-radius: 2px; margin-bottom: 1.4rem; }
 
     .fade { opacity: 0; transform: translateY(22px); transition: opacity 0.6s ease, transform 0.6s ease; }
     .fade.in { opacity: 1; transform: translateY(0); }
+
+    .faq-item { background: var(--bg-card); border: 1px solid rgba(255,255,255,0.08); border-radius: 14px; padding: 1.2rem 1.4rem; margin-bottom: 0.75rem; }
+    .faq-item summary { cursor:pointer; font-weight:700; font-size:0.95rem; color: var(--text); list-style:none; display:flex; justify-content:space-between; align-items:center; }
+    .faq-item summary::-webkit-details-marker { display:none; }
+    .faq-item summary::after { content:'+'; font-size:1.3rem; color: var(--green); font-weight:400; }
+    .faq-item[open] summary::after { content:'−'; }
+    .faq-item p { color: var(--muted); font-size:0.9rem; line-height:1.6; margin-top:0.75rem; }
 
     @media (max-width: 768px) {
       .feature-row { grid-template-columns: 1fr; direction: ltr !important; gap: 2rem; padding: 3rem 0; }
@@ -192,7 +220,7 @@
         Controlá,<br/><span style="color:#4ade80">tu negocio</span><br/>desde WhatsApp.
       </h1>
       <p class="text-lg leading-relaxed mb-7 max-w-md" style="color:rgba(255,255,255,0.75)">Escribís como le hablarías a un conocido. BullFlow registra tus movimientos, los organiza y te da el control de tus finanzas.</p>
-      <div class="grid grid-cols-2 gap-2 mb-8 rubros-grid" style="max-width:380px">
+      <div class="grid grid-cols-2 gap-2 mb-8 rubros-grid" id="rubros-grid" style="max-width:380px">
         <div class="rubro-chip"><svg viewBox="0 0 24 24"><path d="M3 9l9-7 9 7v11a2 2 0 01-2 2H5a2 2 0 01-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>Almacenes</div>
         <div class="rubro-chip"><svg viewBox="0 0 24 24"><circle cx="9" cy="21" r="1"/><circle cx="20" cy="21" r="1"/><path d="M1 1h4l2.68 13.39a2 2 0 002 1.61h9.72a2 2 0 001.95-1.57l1.65-7.43H6"/></svg>Comercios</div>
         <div class="rubro-chip"><svg viewBox="0 0 24 24"><path d="M17 21v-2a4 4 0 00-4-4H5a4 4 0 00-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 00-3-3.87M16 3.13a4 4 0 010 7.75"/></svg>Servicios</div>
@@ -242,24 +270,31 @@
 <section class="py-24 px-6" style="background:var(--bg-mid)">
   <div class="max-w-4xl mx-auto text-center fade">
     <p class="section-eyebrow mb-4">El problema</p>
-    <h2 class="text-4xl md:text-5xl font-extrabold mb-5 tracking-tight leading-tight" style="color:var(--text)">¿No sabés cuánto<br/>ganaste este mes?</h2>
-    <p style="color:var(--muted)" class="max-w-xl mx-auto mb-12 text-lg leading-relaxed">La mayoría de los emprendedores terminan el mes sin saber si ganaron o perdieron plata.</p>
-    <div class="grid grid-cols-1 md:grid-cols-3 gap-4 text-left">
-      <div class="problem-card fade" style="transition-delay:.05s">
-        <div class="problem-icon"><svg viewBox="0 0 24 24"><path d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/></svg></div>
-        <p class="font-bold mb-1.5 text-sm" style="color:var(--text)">Papeles que desaparecen</p>
-        <p style="color:var(--muted)" class="text-sm leading-relaxed">Anotás las ventas en papeles que después perdés o simplemente olvidás.</p>
-      </div>
-      <div class="problem-card fade" style="transition-delay:.1s">
-        <div class="problem-icon"><svg viewBox="0 0 24 24"><path d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"/></svg></div>
-        <p class="font-bold mb-1.5 text-sm" style="color:var(--text)">Sin claridad financiera</p>
-        <p style="color:var(--muted)" class="text-sm leading-relaxed">No sabés si tu negocio ganó o perdió plata este mes. Y eso es un riesgo real.</p>
-      </div>
-      <div class="problem-card fade" style="transition-delay:.15s">
-        <div class="problem-icon"><svg viewBox="0 0 24 24"><rect x="3" y="3" width="18" height="18" rx="2"/><path d="M3 9h18M9 21V9"/></svg></div>
-        <p class="font-bold mb-1.5 text-sm" style="color:var(--text)">Planillas que no usás</p>
-        <p style="color:var(--muted)" class="text-sm leading-relaxed">Perdés horas en Excel que termina abandonado porque nadie tiene tiempo.</p>
-      </div>
+    <h2 class="text-4xl md:text-5xl font-extrabold mb-10 tracking-tight leading-tight" style="color:var(--text)">Tu plata,<br/>antes y después de BullFlow.</h2>
+    <div class="chart-box fade" id="problem-chart">
+      <svg viewBox="0 0 1020 420" xmlns="http://www.w3.org/2000/svg">
+        <line x1="510" y1="20" x2="510" y2="360" stroke="rgba(255,255,255,0.15)" stroke-width="1.5" stroke-dasharray="4 6"/>
+        <g transform="translate(510,20)">
+          <circle r="18" fill="var(--bg-mid)" stroke="#22c55e" stroke-width="2"/>
+          <text x="0" y="5" text-anchor="middle" font-size="16" font-weight="900" fill="#22c55e">B</text>
+        </g>
+        <path id="line-bad" class="draw-line" d="M 20 150 L 90 210 L 150 175 L 210 250 L 270 220 L 330 290 L 390 260 L 450 320" fill="none" stroke="#f87171" stroke-width="4" stroke-linecap="round" stroke-linejoin="round" />
+        <circle cx="90" cy="210" r="4" fill="#f87171"/>
+        <circle cx="270" cy="220" r="4" fill="#f87171"/>
+        <circle cx="450" cy="320" r="4" fill="#f87171"/>
+        <path id="line-good" class="draw-line" d="M 570 300 C 650 300, 650 230, 720 200 C 790 170, 800 110, 880 90 C 930 78, 960 55, 1000 40" fill="none" stroke="#22c55e" stroke-width="4" stroke-linecap="round" stroke-linejoin="round" />
+        <circle cx="650" cy="262" r="4" fill="#22c55e"/>
+        <circle cx="800" cy="145" r="4" fill="#22c55e"/>
+        <circle cx="1000" cy="40" r="4" fill="#22c55e"/>
+        <text x="20" y="400" class="chart-side-tag" fill="#f87171">SIN BULLFLOW</text>
+        <text x="75" y="175" text-anchor="middle" class="chart-label">Papeles que se pierden</text>
+        <text x="300" y="230" text-anchor="middle" class="chart-label">No sabés en qué se te fue la plata</text>
+        <text x="440" y="345" text-anchor="middle" class="chart-label">Planillas que abandonás</text>
+        <text x="820" y="400" class="chart-side-tag" fill="#22c55e">CON BULLFLOW</text>
+        <text x="655" y="290" text-anchor="middle" class="chart-label">Registrado al instante</text>
+        <text x="800" y="120" text-anchor="middle" class="chart-label">Sabés siempre cuánto te queda</text>
+        <text x="960" y="25" text-anchor="middle" class="chart-label">Reportes automáticos</text>
+      </svg>
     </div>
     <div class="mt-10 inline-flex items-center gap-2 text-sm font-semibold" style="color:var(--green)">
       <svg width="15" height="15" viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd"/></svg>
@@ -269,7 +304,7 @@
 </section>
 
 <!-- FEATURES -->
-<section id="como-funciona" class="py-20 px-6" style="background:white">
+<section id="como-funciona" class="py-20 px-6" style="background:var(--bg-deep)">
   <div class="max-w-5xl mx-auto">
     <div class="text-center mb-20 fade">
       <p class="section-eyebrow mb-4">Cómo funciona</p>
@@ -337,6 +372,11 @@
     <div class="grid grid-cols-1 md:grid-cols-2 gap-12 items-center fade">
       <!-- Slider de capturas -->
       <div class="panel-slider">
+        <div class="panel-browser-bar">
+          <span class="panel-browser-dot" style="background:#ff5f57"></span>
+          <span class="panel-browser-dot" style="background:#febc2e"></span>
+          <span class="panel-browser-dot" style="background:#28c840"></span>
+        </div>
         <div class="panel-slide active"><img src="panel1.png" alt="Panel - Resumen y gastos por categoría" /></div>
         <div class="panel-slide"><img src="panel2.png" alt="Panel - Inventario y movimientos" /></div>
         <div class="panel-slide"><img src="panel3.png" alt="Panel - Gastos detallados" /></div>
@@ -356,42 +396,32 @@
       </div>
 
       <!-- Texto con features -->
-      <div class="space-y-6">
-        <div class="flex items-start gap-4">
-          <div style="width:40px;height:40px;border-radius:10px;background:rgba(22,163,74,0.08);display:flex;align-items:center;justify-content:center;flex-shrink:0;">
-            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="var(--green)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"/></svg>
+      <div class="feature-tiles">
+        <div class="feature-tile" style="--accent:#f0b90b">
+          <div class="feature-tile-glyph g-bars">
+            <span style="height:8px"></span><span style="height:14px"></span><span style="height:20px"></span><span style="height:11px"></span>
           </div>
-          <div>
-            <p class="font-bold text-sm mb-1" style="color:var(--text)">Gastos por categoría</p>
-            <p class="text-sm leading-relaxed" style="color:var(--muted)">Visualizás cuánto gastaste en comida, mercadería, servicios y más, con barras de progreso claras.</p>
-          </div>
+          <p class="feature-tile-title">Gastos por categoría</p>
+          <p class="feature-tile-desc">Sabés en dos segundos si gastaste mucho en delivery este mes, sin abrir una sola planilla.</p>
         </div>
-        <div class="flex items-start gap-4">
-          <div style="width:40px;height:40px;border-radius:10px;background:rgba(22,163,74,0.08);display:flex;align-items:center;justify-content:center;flex-shrink:0;">
-            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="var(--green)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 7H4a2 2 0 00-2 2v6a2 2 0 002 2h16a2 2 0 002-2V9a2 2 0 00-2-2z"/><path d="M16 21V5a2 2 0 00-2-2h-4a2 2 0 00-2 2v16"/></svg>
+        <div class="feature-tile" style="--accent:#22c55e">
+          <div class="feature-tile-glyph g-dots">
+            <span style="background:#22c55e"></span><span style="background:#f87171"></span>
           </div>
-          <div>
-            <p class="font-bold text-sm mb-1" style="color:var(--text)">Inventario en tiempo real</p>
-            <p class="text-sm leading-relaxed" style="color:var(--muted)">Cada producto con su stock actualizado. Verde cuando hay stock, rojo cuando se agotó.</p>
-          </div>
+          <p class="feature-tile-title">Inventario en tiempo real</p>
+          <p class="feature-tile-desc">Cada venta descuenta del stock sola. Vos solo mirás el semáforo: verde o rojo.</p>
         </div>
-        <div class="flex items-start gap-4">
-          <div style="width:40px;height:40px;border-radius:10px;background:rgba(22,163,74,0.08);display:flex;align-items:center;justify-content:center;flex-shrink:0;">
-            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="var(--green)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
+        <div class="feature-tile" style="--accent:#22c55e">
+          <div class="feature-tile-glyph g-trail">
+            <span style="opacity:0.3"></span><span style="opacity:0.6"></span><span style="opacity:1"></span>
           </div>
-          <div>
-            <p class="font-bold text-sm mb-1" style="color:var(--text)">Últimos movimientos</p>
-            <p class="text-sm leading-relaxed" style="color:var(--muted)">Historial de todos tus gastos y ventas con fecha, categoría y monto. Filtrá por día, semana o mes.</p>
-          </div>
+          <p class="feature-tile-title">Últimos movimientos</p>
+          <p class="feature-tile-desc">Buscás qué gastaste el jueves pasado y lo encontrás, no scrolleando un Excel de 40 pestañas.</p>
         </div>
-        <div class="flex items-start gap-4">
-          <div style="width:40px;height:40px;border-radius:10px;background:rgba(22,163,74,0.08);display:flex;align-items:center;justify-content:center;flex-shrink:0;">
-            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="var(--green)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="1" x2="12" y2="23"/><path d="M17 5H9.5a3.5 3.5 0 000 7h5a3.5 3.5 0 010 7H6"/></svg>
-          </div>
-          <div>
-            <p class="font-bold text-sm mb-1" style="color:var(--text)">Ganancia neta al instante</p>
-            <p class="text-sm leading-relaxed" style="color:var(--muted)">Ventas menos gastos = tu ganancia real. Siempre visible, siempre actualizada.</p>
-          </div>
+        <div class="feature-tile" style="--accent:#22c55e">
+          <div class="feature-tile-glyph g-arrow">▲</div>
+          <p class="feature-tile-title">Ganancia neta al instante</p>
+          <p class="feature-tile-desc">Un número. Así de simple: ganaste o perdiste este mes. Sin calculadora, sin vueltas.</p>
         </div>
       </div>
     </div>
@@ -499,6 +529,21 @@
   </div>
 </section>
 
+<!-- FAQ -->
+<section class="py-24 px-6" style="background:var(--bg-deep)">
+  <div class="max-w-3xl mx-auto">
+    <div class="text-center mb-14 fade">
+      <p class="section-eyebrow mb-4">Preguntas frecuentes</p>
+      <h2 class="text-4xl font-extrabold tracking-tight" style="color:var(--text)">¿Tenés dudas?</h2>
+    </div>
+    <details class="faq-item fade"><summary>¿Es gratis probarlo?</summary><p>Sí, tenés 7 días gratis sin tarjeta de crédito en cualquier plan. Al terminar la semana, te escribimos por WhatsApp para que elijas tu plan y completes el pago con un link. No hay cobros automáticos.</p></details>
+    <details class="faq-item fade"><summary>¿Sirve solo para negocios o también para gastos personales?</summary><p>Los dos. El plan Personal está pensado para ordenar tus gastos del día a día; el plan Negocio suma ventas, stock e inventario para quienes manejan un comercio.</p></details>
+    <details class="faq-item fade"><summary>¿Mis datos están seguros?</summary><p>Sí, aplicamos medidas de seguridad técnica y organizativa razonables y no vendemos tu información a terceros. Podés ver el detalle completo en nuestra <a href="privacidad.html" style="color:var(--green);font-weight:700;">Política de Privacidad</a>.</p></details>
+    <details class="faq-item fade"><summary>¿Necesito instalar una app?</summary><p>No, todo funciona desde el WhatsApp que ya usás. Además tenés acceso a un panel web con tus números organizados, sin instalar nada adicional.</p></details>
+    <details class="faq-item fade"><summary>¿Puedo cancelar cuando quiera?</summary><p>Sí, no hay contratos de permanencia. Vos elegís cuándo pagar tu plan y podés dejar de usarlo cuando quieras.</p></details>
+  </div>
+</section>
+
 <!-- CTA FINAL -->
 <section class="py-24 px-6" style="background:var(--bg-mid); border-top: 1px solid var(--border)">
   <div class="max-w-3xl mx-auto text-center fade">
@@ -515,7 +560,7 @@
 <!-- FOOTER -->
 <footer style="background:var(--bg-deep); border-top: 1px solid var(--border)" class="py-7 px-6">
   <div class="max-w-6xl mx-auto flex flex-col items-center gap-4 text-center">
-    <img src="logo.png.png" alt="BullFlow" style="height:60px;width:auto;" />
+    <div style="background:white;border-radius:10px;padding:6px 12px;display:inline-flex;"><img src="logo.png.png" alt="BullFlow" style="height:60px;width:auto;" /></div>
     <p style="color:var(--muted)" class="text-sm">© 2026 BullFlow. Todos los derechos reservados.</p>
     <p style="color:var(--muted)" class="text-sm max-w-2xl">BullFlow es una marca comercial operada por EMILIANO GUEVARA HERNANDEZ, Argentina.</p>
     <div class="flex flex-wrap items-center justify-center gap-x-4 gap-y-2 text-sm font-semibold" style="color:var(--text)">
@@ -573,13 +618,13 @@
 
   // Chat animado
   const messages = [
-    { type: 'recv', text: '👋 ¡Hola! Soy <b>BullFlow</b> 🐂<br><br><i>¿Qué querés registrar? Escribí tu gasto, venta o \'ayuda\'</i>', time: '10:55' },
-    { type: 'sent', text: 'Gasté $25mil en mercadería', time: '10:56 ✓✓' },
+    { type: 'recv', text: '👋 ¡Hola! Soy <b>BullFlow</b> 🐂<br><br><i>¿Qué querés registrar? Escribí tu gasto o \'ayuda\'</i>', time: '10:55' },
+    { type: 'sent', text: 'Gasté 12mil en el súper', time: '10:56 ✓✓' },
     { type: 'typing', duration: 1200 },
-    { type: 'recv', text: '✅ <b>Gasto registrado</b><br><br>💰 Monto: ARS 25.000<br>📁 Categoría: 🧳 Mercadería<br>🕐 Fecha: 22/06/2026', time: '10:56' },
+    { type: 'recv', text: '✅ <b>Gasto registrado</b><br><br>💰 Monto: ARS 12.000<br>📁 Categoría: 🛒 Supermercado<br>🕐 Fecha: 22/06/2026', time: '10:56' },
     { type: 'sent', text: 'Reporte', time: '10:56 ✓✓' },
     { type: 'typing', duration: 1400 },
-    { type: 'recv', text: '📊 <b>Reporte junio</b><br><br>💸 Gastos: $336.200<br>🛒 Ventas: $150.000<br>💰 <b style="color:#4ade80">Ganancia: $95.500</b>', time: '10:56' },
+    { type: 'recv', text: '📊 <b>Reporte junio</b><br><br>🏠 Hogar: $138.700<br>🍔 Comida: $94.500<br>💸 Total: <b>$233.200</b><br><br>💰 <b style="color:#4ade80">Te quedaron $45.000 disponibles</b>', time: '10:56' },
   ];
   const chatBody = document.getElementById('chat-body');
   let msgIndex = 0;
@@ -800,6 +845,27 @@
   });
 
   renderTestimonials();
+</script>
+
+<script>
+  const chartLines = [document.getElementById('line-bad'), document.getElementById('line-good')];
+  if (chartLines[0] && chartLines[1]) {
+    chartLines.forEach(line => {
+      const len = line.getTotalLength();
+      line.style.strokeDasharray = len;
+      line.style.strokeDashoffset = len;
+    });
+    const chartBoxEl = document.getElementById('problem-chart');
+    const chartObs = new IntersectionObserver(entries => {
+      entries.forEach(e => {
+        if (e.isIntersecting) {
+          chartLines.forEach((line, i) => setTimeout(() => { line.style.strokeDashoffset = '0'; }, i * 300));
+          chartObs.disconnect();
+        }
+      });
+    }, { threshold: 0.3 });
+    chartObs.observe(chartBoxEl);
+  }
 </script>
 </body>
 </html>
