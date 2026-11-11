@@ -38,6 +38,9 @@
 
     #navbar { transition: background 0.3s, box-shadow 0.3s; background: transparent; position: fixed; top: 0; left: 0; right: 0; z-index: 50; }
     #navbar.scrolled { background: rgba(3,13,30,0.92); backdrop-filter: blur(16px); box-shadow: 0 1px 0 rgba(255,255,255,0.08); }
+    .mobile-menu { display:none; flex-direction:column; background: rgba(3,13,30,0.97); backdrop-filter: blur(16px); border-top: 1px solid var(--border); }
+    .mobile-menu.open { display:flex; }
+    .mobile-menu-link { padding: 14px 24px; color: white; font-weight:700; font-size:0.95rem; border-bottom: 1px solid rgba(255,255,255,0.08); text-decoration:none; }
 
     .btn-primary { background: var(--green); color: #fff; font-weight: 700; border-radius: 8px; padding: 0.7rem 1.4rem; display: inline-flex; align-items: center; gap: 0.45rem; transition: background 0.2s, transform 0.15s, box-shadow 0.2s; font-size: 0.875rem; letter-spacing: 0.01em; }
     .btn-primary:hover { background: #16a34a; transform: translateY(-1px); box-shadow: 0 8px 24px rgba(34,197,94,0.35); }
@@ -216,7 +219,16 @@
         <svg width="15" height="15" viewBox="0 0 24 24" fill="currentColor"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347z"/><path d="M12 0C5.373 0 0 5.373 0 12c0 2.117.549 4.103 1.51 5.829L.057 23.93l6.255-1.439A11.945 11.945 0 0012 24c6.627 0 12-5.373 12-12S18.627 0 12 0zm0 21.818a9.818 9.818 0 01-5.006-1.37l-.36-.213-3.712.853.879-3.609-.235-.371A9.818 9.818 0 1112 21.818z"/></svg>
         Empezar gratis
       </button>
+      <button id="mobile-menu-btn" class="md:hidden" aria-label="Abrir menú" style="background:none;border:none;padding:4px;cursor:pointer;">
+        <svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2.3" stroke-linecap="round"><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="18" x2="21" y2="18"/></svg>
+      </button>
     </div>
+  </div>
+  <div id="mobile-menu" class="mobile-menu">
+    <a href="#como-funciona" class="mobile-menu-link">Cómo funciona</a>
+    <a href="#faq-bullflow" class="mobile-menu-link">FAQ</a>
+    <a href="contacto.html" class="mobile-menu-link">Contacto</a>
+    <a href="#precios" class="mobile-menu-link">Precios</a>
   </div>
 </nav>
 
@@ -444,7 +456,7 @@
     <div class="text-center mb-14 fade">
       <p class="section-eyebrow mb-4">Testimonios</p>
       <h2 class="text-4xl font-extrabold tracking-tight" style="color:var(--text)">Lo que dicen nuestros usuarios</h2>
-      <p class="max-w-2xl mx-auto mt-4 text-lg" style="color:var(--muted)">Compartí tu experiencia con BullFlow y ayudá a otros a dar el siguiente paso con sus finanzas.</p>
+      <p class="max-w-2xl mx-auto mt-4 text-lg" style="color:var(--muted)">Compartí tu experiencia con BullFlow. Lo leemos y lo sumamos a esta sección a mano.</p>
     </div>
 
     <div class="testimonial-form fade mb-10">
@@ -617,6 +629,14 @@
     const scrolled = window.scrollY > window.innerHeight - 80;
     navbar.classList.toggle('scrolled', scrolled);
     navLinks.forEach(link => { link.style.color = scrolled ? 'var(--text)' : 'white'; });
+  });
+
+  // Menú mobile
+  const mobileMenuBtn = document.getElementById('mobile-menu-btn');
+  const mobileMenu = document.getElementById('mobile-menu');
+  mobileMenuBtn.addEventListener('click', () => mobileMenu.classList.toggle('open'));
+  document.querySelectorAll('.mobile-menu-link').forEach(link => {
+    link.addEventListener('click', () => mobileMenu.classList.remove('open'));
   });
 
   // Fade observer
@@ -838,7 +858,7 @@
     selectedRating = 0;
     ratingInput.value = '';
     paintStars(0);
-    setFeedback('¡Gracias por tu testimonio!', false);
+    setFeedback('¡Gracias! Lo leemos y lo sumamos pronto a la página.', false);
 
     try {
       await sendTestimonialEmail({
