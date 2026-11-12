@@ -120,6 +120,9 @@
     .cm.s { background: #005c4b; align-self: flex-end; border-bottom-right-radius: 2px; }
     .cm.r { background: #202c33; align-self: flex-start; border-bottom-left-radius: 2px; }
     .cm-time { font-size: 9.5px; color: #8696a0; text-align: right; margin-top: 2px; }
+    .cm-buttons { max-width: 90%; align-self: flex-start; background: #202c33; border-radius: 0 0 7px 7px; margin-top: -5px; }
+    .cm-btn-row { padding: 7px 9px; font-size: 11px; text-align: center; color: #e9edef; border-top: 1px solid rgba(255,255,255,0.08); }
+    .cm-btn-row.accent { color: #06cf9c; font-weight: 700; }
 
     .feature-row { display: grid; grid-template-columns: 1fr 1fr; gap: 4rem; align-items: center; padding: 5rem 0; border-bottom: 1px solid var(--border); }
     .feature-row:last-child { border-bottom: none; }
@@ -199,6 +202,7 @@
       .hero-section { min-height: 88vh; background: linear-gradient(160deg, var(--bg-mid) 0%, var(--bg-deep) 70%); }
       .hero-slides { display: none; }
       .hero-dots { display: none; }
+      #navbar img { height: 48px !important; }
     }
   </style>
 </head>
@@ -344,7 +348,8 @@
         <div class="chat-mini-body">
           <div class="cm r">👋 ¡Hola! Soy <b>BullFlow</b> 🐂<br/><br/><i>¿Qué querés registrar? Escribí tu gasto, venta o 'ayuda'</i><div class="cm-time">10:55</div></div>
           <div class="cm s">Gasté $25mil en el súper<div class="cm-time">10:56 ✓✓</div></div>
-          <div class="cm r">✅ <b>Gasto registrado</b><br/><br/>💰 Monto: ARS 25.000<br/>📁 Categoría: 🛒 Supermercado<br/>🕐 Fecha: 22/06/2026<br/><br/><i>Escribí "reporte" para ver tu mes</i><div class="cm-time">10:56</div></div>
+          <div class="cm r">✅ <b>Gasto registrado</b><br/><br/>💰 Monto: ARS 25.000,00<br/>📁 Categoría: 🛒 Supermercado<br/>📝 Descripción: supermercado<br/>🕐 Fecha: 22/06/2026<br/><br/><i>Escribí "reporte" para ver tu mes</i><div class="cm-time">10:56</div></div>
+          <div class="cm-buttons"><div class="cm-btn-row">🗑️ Eliminar</div><div class="cm-btn-row accent">🌐 Panel web</div></div>
         </div>
       </div>
     </div>
@@ -650,7 +655,7 @@
     { type: 'recv', text: '👋 ¡Hola! Soy <b>BullFlow</b> 🐂<br><br><i>¿Qué querés registrar? Escribí tu gasto o \'ayuda\'</i>', time: '10:55' },
     { type: 'sent', text: 'Gasté 12mil en el súper', time: '10:56 ✓✓' },
     { type: 'typing', duration: 1200 },
-    { type: 'recv', text: '✅ <b>Gasto registrado</b><br><br>💰 Monto: ARS 12.000<br>📁 Categoría: 🛒 Supermercado<br>🕐 Fecha: 22/06/2026', time: '10:56' },
+    { type: 'recv', text: '✅ <b>Gasto registrado</b><br><br>💰 Monto: ARS 12.000,00<br>📁 Categoría: 🛒 Supermercado<br>📝 Descripción: supermercado<br>🕐 Fecha: 22/06/2026', time: '10:56' },
     { type: 'sent', text: 'Reporte', time: '10:56 ✓✓' },
     { type: 'typing', duration: 1400 },
     { type: 'recv', text: '📊 <b>Reporte junio</b><br><br>🏠 Hogar: $138.700<br>🍔 Comida: $94.500<br>💸 Total: <b>$233.200</b><br><br>💰 <b style="color:#4ade80">Te quedaron $45.000 disponibles</b>', time: '10:56' },
@@ -698,7 +703,7 @@
   let testimonialsVisible = TESTIMONIALS_INITIAL_VISIBLE;
 
   const defaultTestimonials = [
-    { id: 'd1', name: 'Agustina G.', business: 'Emprendedora — Ropa', text: 'Antes terminaba el mes sin saber si había ganado o perdido. Ahora en dos mensajes ya sé exactamente cómo me fue.', rating: 5 },
+    { id: 'd1', name: 'Agustina G.', business: 'Uso personal', text: 'No tengo negocio, lo uso para mis gastos del día a día. Antes se me iba la plata sin darme cuenta, ahora anoto todo por WhatsApp y a fin de mes sé exactamente en qué la gasté.', rating: 5 },
     { id: 'd2', name: 'Walter Q.', business: 'Dueño — Almacén de barrio', text: 'Lo uso desde el WhatsApp que ya tenía. Sin bajar nada, sin aprender nada nuevo. Fue inmediato.', rating: 5 },
     { id: 'd3', name: 'Francisco R.', business: 'Servicio de Dron — Negocio propio', text: 'El reporte mensual me salvó. Descubrí que estaba gastando el doble en mercadería de lo que pensaba.', rating: 5 }
   ];
