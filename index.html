@@ -91,6 +91,10 @@
     .wa-typing span:nth-child(2) { animation-delay: 0.2s; }
     .wa-typing span:nth-child(3) { animation-delay: 0.4s; }
     @keyframes bounce { 0%, 60%, 100% { transform: translateY(0); } 30% { transform: translateY(-5px); } }
+    .wa-buttons { max-width: 88%; align-self: flex-start; background: #202c33; border-radius: 0 0 8px 8px; margin-top: -4px; opacity: 0; transform: translateY(6px); transition: opacity 0.35s ease, transform 0.35s ease; }
+    .wa-buttons.show { opacity: 1; transform: translateY(0); }
+    .wa-btn-row { padding: 9px 10px; font-size: 12px; text-align: center; color: #e9edef; border-top: 1px solid rgba(255,255,255,0.08); }
+    .wa-btn-row.accent { color: #06cf9c; font-weight: 700; }
 
     .stats-band { border-top: 1px solid var(--border); border-bottom: 1px solid var(--border); background: var(--bg-mid); padding: 2.5rem 0; }
     .stat-item { text-align: center; padding: 0 2rem; }
@@ -656,6 +660,7 @@
     { type: 'sent', text: 'Gasté 12mil en el súper', time: '10:56 ✓✓' },
     { type: 'typing', duration: 1200 },
     { type: 'recv', text: '✅ <b>Gasto registrado</b><br><br>💰 Monto: ARS 12.000,00<br>📁 Categoría: 🛒 Supermercado<br>📝 Descripción: supermercado<br>🕐 Fecha: 22/06/2026', time: '10:56' },
+    { type: 'buttons' },
     { type: 'sent', text: 'Reporte', time: '10:56 ✓✓' },
     { type: 'typing', duration: 1400 },
     { type: 'recv', text: '📊 <b>Reporte junio</b><br><br>🏠 Hogar: $138.700<br>🍔 Comida: $94.500<br>💸 Total: <b>$233.200</b><br><br>💰 <b style="color:#4ade80">Te quedaron $45.000 disponibles</b>', time: '10:56' },
@@ -664,10 +669,12 @@
   let msgIndex = 0;
   function addTyping() { const el = document.createElement('div'); el.className = 'wa-typing'; el.innerHTML = '<span></span><span></span><span></span>'; chatBody.appendChild(el); setTimeout(() => el.classList.add('show'), 50); return el; }
   function addMessage(msg) { const el = document.createElement('div'); el.className = `wa-msg ${msg.type === 'sent' ? 'sent' : 'recv'}`; el.innerHTML = `${msg.text}<div class="wa-time">${msg.time}</div>`; chatBody.appendChild(el); setTimeout(() => el.classList.add('show'), 50); chatBody.scrollTop = chatBody.scrollHeight; }
+  function addButtons() { const el = document.createElement('div'); el.className = 'wa-buttons'; el.innerHTML = '<div class="wa-btn-row">🗑️ Eliminar</div><div class="wa-btn-row accent">🌐 Panel web</div>'; chatBody.appendChild(el); setTimeout(() => el.classList.add('show'), 50); chatBody.scrollTop = chatBody.scrollHeight; }
   function runChat() {
     if (msgIndex >= messages.length) { setTimeout(() => { chatBody.innerHTML = ''; msgIndex = 0; setTimeout(runChat, 800); }, 4000); return; }
     const m = messages[msgIndex++];
     if (m.type === 'typing') { const t = addTyping(); setTimeout(() => { t.remove(); runChat(); }, m.duration); }
+    else if (m.type === 'buttons') { addButtons(); setTimeout(runChat, 900); }
     else { addMessage(m); setTimeout(runChat, m.type === 'sent' ? 800 : 1200); }
   }
   setTimeout(runChat, 800);
